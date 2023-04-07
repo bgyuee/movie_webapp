@@ -13,12 +13,12 @@ function Banner() {
 
   const fetchData = async () => {
     //현재 상영중인 영화 정보를 가져오기(20개 영화)
-    const response = await axios.get(requests.fetchNowPlaying); //기존에 axios로 했을대는 주소를 한꺼번에 했는데 이번에는 직접 axsio를 만들어서 baseurl이랑  params안에 api키까지 다 지정해놓고, requests라는 파일을 만들어 안에 상세한 주소까지넣어서 주소를 안치고 쉽게 받아올수있다
-    console.log(response);
+    const request = await axios.get(requests.fetchNowPlaying); //기존에 axios로 했을대는 주소를 한꺼번에 했는데 이번에는 직접 axsio를 만들어서 baseurl이랑  params안에 api키까지 다 지정해놓고, requests라는 파일을 만들어 안에 상세한 주소까지넣어서 주소를 안치고 쉽게 받아올수있다
+    console.log('request --->',request);
 
     // 20 개 영화중에서 영화 하나의 ID를 랜덤하게 가져오기
-    const movieId = response.data.results[
-      Math.floor(Math.random() * response.data.results.length +0) //0 ~ 19
+    const movieId = request.data.results[
+      Math.floor(Math.random() * request.data.results.length +0) //0 ~ 19인덱스번호의 데이터들이 있는데 이중에서 하나를 랜덤으로 선택해 거기에서의 id값을 뽑아낸다
     ].id;
     console.log(movieId);
 
@@ -27,8 +27,8 @@ function Banner() {
     const {
       data:
       movieDetail
-    } = await axios.get(`/movie/${movieId}`, {  // 앞에정보가져오고 두에 ,붙이면 조건으로 params로 상세정보를 가져올수 있다
-      params : {append_to_response: "videos"}
+    } = await axios.get(`/movie/${movieId}`, {  // 앞에정보가져오고 두에 ,붙이면 조건으로 params로 상세정보를 가져올수 있다, 문서에 들어가서 movie 항목을 보면 각각의 정보를 가져올때 쓰는 문장들이 있다
+      params : {append_to_response: "videos"} //movieId를 가져올때, 해당 영화 정보에 관련된 비디오정보를 추가적으로 가져와라고 설정
     });
       console.log(`movieDetail ->>`, movieDetail);
       setMovie(movieDetail);
@@ -36,6 +36,7 @@ function Banner() {
 
   const truncate = (str, n) => {
     return str?.length > n ? str.substr(0, n - 1) + "..." : str; //str?.length > n : str의 글자수가 100보다 클경우에 //? 되면되고 안되면 안되고 에러가 안뜸
+                                                                // 100글자보다 크면 string에서 0번인덱스부터 99번인덱스까지 나오게하고 뒤에는 "..."을 붙여라 100자보다 작으면 그냥 써라
   }
 
 
