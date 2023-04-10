@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react'
 import axios from 'api/axios';  //api폴더안에있는 axios를 사용하겠다
 import requests from 'api/requests';
 import "styles/Banner.css";
+import styled from 'styled-components'; //styled conponent적용
 
 function Banner() {
 
   const [movie, setMovie] = useState([]);
+  const [isClicked, setIsClicked] = useState(false);
 
-  useEffect(() => { //api가져오는건 항상 useEffect시점이다
+  useEffect(() => { //api가져오는건 항상 useEffect시점이다 //useEffect안에 async사용할수 없어서 함수로 넣어준다
     fetchData();
   }, []);
 
@@ -39,25 +41,82 @@ function Banner() {
                                                                 // 100글자보다 크면 string에서 0번인덱스부터 99번인덱스까지 나오게하고 뒤에는 "..."을 붙여라 100자보다 작으면 그냥 써라
   }
 
-
-  return (
-    // https://image.tmdb.org/t/p/w500/kqjL17yufvn9OVLyXYpvtyrFfak.jpg
-    <header className='banner'
-     style={{
-      backgroundImage:`url("https://image.tmdb.org/t/p/original/${movie.backdrop_path}")`,
-      backgroundPosition:"top center",
-      backgroundSize:"cover"}}>
-      <div className='banner__contents'>
-        <h1 className='banner__title'>
-          {movie.title || movie.name || movie.original_name}
-          {/* null병합연산자: null이다 undefined값이 나오면 바로뒤에값을 실행해라 */}
-        </h1>
-        <p className='banner__description'>
-          {truncate(movie.overview, 100)}
-        </p>
-      </div>
-    </header>
-  )
+  if(!isClicked){
+    return (
+      // https://image.tmdb.org/t/p/w500/kqjL17yufvn9OVLyXYpvtyrFfak.jpg
+      <header className='banner'
+      style={{
+        backgroundImage:`url("https://image.tmdb.org/t/p/original/${movie.backdrop_path}")`,
+        backgroundPosition:"top center",
+        backgroundSize:"cover"}}>
+        <div className='banner__contents'>
+          <h1 className='banner__title'>
+            {movie.title || movie.name || movie.original_name}
+            {/* null병합연산자: null이다 undefined값이 나오면 바로뒤에값을 실행해라 */}
+          </h1>
+          <div className='banner__buttons'>
+            <button className='banner__button play' onClick={() => setIsClicked(true)}>
+              play
+            </button>
+            <button className='banner__button_info info'>
+              More Information
+            </button>
+          </div>
+          <p className='banner__description'>
+            {truncate(movie.overview, 100)}
+          </p>
+        </div>
+        <div className='banner__fadeBottom'></div>
+      </header>
+    )
+    }else{
+      return (
+        <Container>
+          <HomeContainer>
+            <Iframe
+            src={`https://www.youtube.com/embed/${movie.videos.results[0]?.key} //?(optional 연산자):undefine이라는 데이터값을 넣어준다
+            ?controls=0&autoplay=1&mute=1&playlist=${movie.videos.results[0]?.key}`}
+            width='640'
+            height='360'
+            frmaeborder="0"
+            allow="autoplay; fullscreen ">
+            </Iframe>
+          </HomeContainer>
+        </Container>
+      )
+    }
 }
+
+const Container = styled.div` 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+`;
+//div로 만든다
+//빽틱안에 css를 넣는다
+
+const HomeContainer = styled.div`
+  width:100%;
+  height:100%;
+`;
+
+const Iframe = styled.iframe`
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  opacity: 0.65;
+  border: none;
+  &::after{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+`;
 
 export default Banner;
