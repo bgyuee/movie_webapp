@@ -7,6 +7,8 @@ function Row({isLargeRow, title, id, fetchUrl}) {
   const [movies, setMovies] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [movieSelected, setMovieSelected] = useState({}); //비어있는 object(객체)
+  console.log('movieSelected ->', movieSelected);
+  console.log('movies ->', movies);
 
   useEffect(() => {
     fetchMovieData();

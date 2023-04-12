@@ -8,7 +8,6 @@ const [show,setShow] = useState(false);
 const [searchValue, setSearchValue] = useState("");
 const navigate = useNavigate(); //특정주소로 가겠다
 
-
 useEffect(() => {
   window.addEventListener("scroll", () => {
     if(window.scrollY > 50) {
@@ -24,7 +23,11 @@ useEffect(() => {
 
 const onChange = (e) => {
   setSearchValue(e.target.value);
-  navigate(`/search?q=${e.target.value}`); //q는 query(질문)
+  if(e.target.value === ""){
+    navigate('/');
+  }else {
+    navigate(`/search?q=${e.target.value}`); //q는 query(질문)
+  } 
 }
 
 // onClick={() => {window.location.reload()}} 누룰때마다 새로고침이 되게한다

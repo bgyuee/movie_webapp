@@ -32,8 +32,8 @@ function Banner() {
     } = await axios.get(`/movie/${movieId}`, {  // 앞에정보가져오고 두에 ,붙이면 조건으로 params로 상세정보를 가져올수 있다, 문서에 들어가서 movie 항목을 보면 각각의 정보를 가져올때 쓰는 문장들이 있다
       params : {append_to_response: "videos"} //movieId를 가져올때, 해당 영화 정보에 관련된 비디오정보를 추가적으로 가져와라고 설정
     });
-      console.log(`movieDetail ->>`, movieDetail);
       setMovie(movieDetail);
+      console.log(`movieDetail ->>`, movieDetail);
   }
 
   const truncate = (str, n) => {
@@ -75,8 +75,8 @@ function Banner() {
         <Container>
           <HomeContainer>
             <Iframe
-            src={`https://www.youtube.com/embed/${movie.videos.results[0]?.key} //?(optional 연산자):undefine이라는 데이터값을 넣어준다
-            ?controls=0&autoplay=1&mute=1&playlist=${movie.videos.results[0]?.key}`}
+            src={`https://www.youtube.com/embed/${movie.videos.results[0]?.key}
+            ?controls=0&autoplay=1&mute=1&playlist=${movie.videos.results[0]?.key}`} //?(optional 연산자):undefine이라는 데이터값을 넣어준다
             width='640'
             height='360'
             frmaeborder="0"

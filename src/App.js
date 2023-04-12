@@ -1,9 +1,6 @@
-import Banner from "components/Banner";
 import Nav from "components/Nav";
-import Row from "components/Row";
 import Footer from "components/Footer";
 import "styles/App.css";
-import requests from "api/requests";
 import { Outlet, Route, Routes } from "react-router-dom";
 import Mainpage from "routes/Mainpage";
 import Detailpage from "routes/Detailpage";
@@ -26,7 +23,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index path="" element={<Mainpage />} /> {/* index => localhost:3000/ 즉 path ="/"이거랑 같다 부모의 주소를 그대로 가져온다 */}
-          <Route path=":mobieId" element={<Detailpage />} /> {/*localhost:3000/863  부모주소기준/863*/}
+          <Route path=":movieId" element={<Detailpage />} /> {/*localhost:3000/863  부모주소기준/863  ":movieId"이건 Params값 */}
           <Route path="search" element={<Searchpage />} />  {/* localhost:3000/search  부모주소기준/search */}
         </Route>
       </Routes>
