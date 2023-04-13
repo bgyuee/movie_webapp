@@ -5,7 +5,7 @@ import axios from '../api/axios';
 function Detailpage() {
 
   const [movie, setMovie] = useState({});
-  let {movieId} = useParams(); //주소창에 params값을 가져온다 /54684 이값 //파람값이 :movieId이거임
+  let {movieId} = useParams(); //주소창에 params값을 가져온다 /54684 이값 //파람값이 :movieId이거임 //params는 특정 매개변수값을 추출할때 씀
   console.log('useParams()->', useParams());
   console.log('movieID ->', movieId);
 

@@ -3,10 +3,12 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import "../styles/Searchpage.css";
 import useDebounce from 'hooks/useDebounce';
+import MovieModal from 'components/MovieModal';
 
 function Searchpage() {
   const [searchResults, setSearchResults] = useState([]); //영화를 배열로 받아오겠다
   const navigate = useNavigate();
+  const [modalOpen, setModalOpen] = useState(false);
 
   const useQuery = () => {
     return new URLSearchParams(useLocation().search); //URLSearchParams이거를 사용하면 객체를 가져올수있다 useLocation 객체안에 search속성을 가져오겠다
@@ -17,9 +19,6 @@ function Searchpage() {
 
   const searchTerm = query.get("q"); //q에 해당되는 값을 가져와라
   const debounceSerarchTerm = useDebounce(searchTerm, 500); //0.5초
-
-  console.log('searchTerm ->', searchTerm); //spiderman
-  console.log('debounceSerarchTerm ->', debounceSerarchTerm);
 
   useEffect(() => {
     if(debounceSerarchTerm) {
@@ -46,9 +45,13 @@ function Searchpage() {
             const movieImageUrl ="https://image.tmdb.org/t/p/w500/" + movie.backdrop_path;
             return(
               <div className='movie' key={movie.id} >
-                <div className='movie__colum-poster' onClick={() => navigate(`/${movie.id}`)}>
-                  <img src={movieImageUrl} alt={movie.title} className='movie__poster' /> {/*여기다가 평점, 다른정보들도 넣기*/ }
-                </div>
+                {!modalOpen ? (
+                   <div className='movie__colum-poster' onClick={() => setModalOpen(true)}>
+                   <img src={movieImageUrl} alt={movie.title} className='movie__poster' /> {/*여기다가 평점, 다른정보들도 넣기*/ }
+                 </div>
+                ):(
+                  <MovieModal {...movie} setModalOpen={setModalOpen} key={movie.id} />
+                )}
               </div>
             )
           }
@@ -65,7 +68,7 @@ function Searchpage() {
     );
   }
 
-  return renderSearchResults(); //함수안에 true값이나 flase값을 내보내주겠다
+  return renderSearchResults(); //함수안에 true값이나 false값을 내보내주겠다
 }
 
 export default Searchpage;
