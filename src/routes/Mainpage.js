@@ -1,7 +1,7 @@
-import requests from 'api/requests'
-import Banner from 'components/Banner'
-import Row from 'components/Row'
-import React from 'react'
+import requests from 'api/requests';
+import Banner from 'components/Banner';
+import Row from 'components/Row';
+import React from 'react';
 
 function Mainpage() {
   return (

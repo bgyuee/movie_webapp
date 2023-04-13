@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'api/axios';  //api폴더안에있는 axios를 사용하겠다
 import requests from 'api/requests';
-import "styles/Banner.css";
+import "styles/Banner.scss";
 import styled from 'styled-components'; //styled conponent적용
+import MovieModal from './MovieModal';
 
 function Banner() {
 
   const [movie, setMovie] = useState([]);
   const [isClicked, setIsClicked] = useState(false);
+  const [ModalOpen, setModalOpen] = useState(false);
 
   useEffect(() => { //api가져오는건 항상 useEffect시점이다 //useEffect안에 async사용할수 없어서 함수로 넣어준다
     fetchData();
@@ -59,7 +61,7 @@ function Banner() {
             <button className='banner__button play' onClick={() => setIsClicked(true)}>
               play
             </button>
-            <button className='banner__button_info info'>
+            <button className='banner__button_info info' onClick={() => setModalOpen(true)}>
               More Information
             </button>
           </div>
@@ -68,9 +70,10 @@ function Banner() {
           </p>
         </div>
         <div className='banner__fadeBottom'></div>
+        {ModalOpen&& <MovieModal {...movie} setModalOpen={setModalOpen}/>}
       </header>
     )
-    }else{
+    } else{
       return (
         <Container>
           <HomeContainer>
@@ -97,7 +100,7 @@ const Container = styled.div`
   height: 100vh;
 `;
 //div로 만든다
-//빽틱안에 css를 넣는다
+//``안에 css를 넣는다
 
 const HomeContainer = styled.div`
   width:100%;

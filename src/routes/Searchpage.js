@@ -1,35 +1,36 @@
 import axios from '../api/axios';
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import "../styles/Searchpage.css";
+import { useLocation } from 'react-router-dom';
+import "../styles/Searchpage.scss";
 import useDebounce from 'hooks/useDebounce';
 import MovieModal from 'components/MovieModal';
 
 function Searchpage() {
-  const [searchResults, setSearchResults] = useState([]); //영화를 배열로 받아오겠다
-  const navigate = useNavigate();
-  const [modalOpen, setModalOpen] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
+  const [selectedMovie, setSelectedMovie] = useState("");
+  const [ModalOpen, setModalOpen] = useState(false);
+
+  console.log('selectedMovie ->', selectedMovie);
 
   const useQuery = () => {
-    return new URLSearchParams(useLocation().search); //URLSearchParams이거를 사용하면 객체를 가져올수있다 useLocation 객체안에 search속성을 가져오겠다
+    return new URLSearchParams(useLocation().search);
   }
   console.log('useLocation()->', useLocation());
 
-  let query = useQuery(); // ?q=spiderman
+  let query = useQuery();
 
-  const searchTerm = query.get("q"); //q에 해당되는 값을 가져와라
-  const debounceSerarchTerm = useDebounce(searchTerm, 500); //0.5초
+  const searchTerm = query.get("q");
+  const debounceSerarchTerm = useDebounce(searchTerm, 500); //여기서 훅함수 호출
 
   useEffect(() => {
     if(debounceSerarchTerm) {
       fetchSearchMovie(debounceSerarchTerm);
     }
-  }, [debounceSerarchTerm]) //검색이 바뀔때마다 실행해라
+  }, [debounceSerarchTerm])
 
   const fetchSearchMovie = async () => {
     try {
-      const request = await axios.get(`/search/movie?include_adult=false&query=${debounceSerarchTerm}`); //axios안에 api키가 있음 //query검색할 질문이뭐냐 //debounceSerarchTerm호출하겠다
-      // https://api.themoviedb.org/3/search/&query=
+      const request = await axios.get(`/search/movie?include_adult=false&query=${debounceSerarchTerm}`);
       console.log(`request ->`, request);
       setSearchResults(request.data.results);
     } catch (error) {
@@ -37,25 +38,29 @@ function Searchpage() {
     }
   }
 
+  const handleMovieClick = (movie) => {
+    setSelectedMovie(movie);
+    setModalOpen(true);
+  };
+
   const renderSearchResults = () => {
-    return searchResults.length > 0 ? ( //검색결과 o
+    return searchResults.length > 0 ? (
       <section className='search-container'>
         {searchResults.map(movie => {
           if(movie.backdrop_path !== null && movie.media_type !== "person"){
             const movieImageUrl ="https://image.tmdb.org/t/p/w500/" + movie.backdrop_path;
             return(
               <div className='movie' key={movie.id} >
-                {!modalOpen ? (
-                   <div className='movie__colum-poster' onClick={() => setModalOpen(true)}>
-                   <img src={movieImageUrl} alt={movie.title} className='movie__poster' /> {/*여기다가 평점, 다른정보들도 넣기*/ }
-                 </div>
-                ):(
-                  <MovieModal {...movie} setModalOpen={setModalOpen} key={movie.id} />
-                )}
+                <div className='movie__colum-poster' onClick={() => handleMovieClick(movie)}>
+                  <img src={movieImageUrl} alt={movie.title} className='movie__poster' />
+                </div>
               </div>
             )
           }
         })}
+        {ModalOpen && (
+          <MovieModal {...selectedMovie} selectedMovie={selectedMovie} setModalOpen={setModalOpen} />
+        )}
       </section>
     ) : (
       <section className='no-results'>
@@ -68,7 +73,7 @@ function Searchpage() {
     );
   }
 
-  return renderSearchResults(); //함수안에 true값이나 false값을 내보내주겠다
+  return renderSearchResults();
 }
 
 export default Searchpage;

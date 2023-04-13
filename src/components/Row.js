@@ -1,7 +1,7 @@
 import axios from 'api/axios';
 import React, { useEffect, useState } from 'react';
 import MovieModal from 'components/MovieModal';
-import "styles/Row.css";
+import "styles/Row.scss";
 
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -59,14 +59,6 @@ function Row({isLargeRow, title, id, fetchUrl}) {
           slidesPerGroup: 3 
         }}}
       >
-        {/* <div className='slider'>
-          <div className='slider__arrow left'>
-            <span className='arrow'
-            onClick={() => { document.getElementById(id).scrollLeft -= (window.innerWidth - 80); }} //arrow띠 width가 80이기 때문에 -80
-            >
-              {"<"}
-            </span>
-          </div> */}
           <div id={id} className='row__posters'>
             {movies.map((movie) => (
               <SwiperSlide>
@@ -81,14 +73,6 @@ function Row({isLargeRow, title, id, fetchUrl}) {
               </SwiperSlide>
             ))}
           </div>
-          {/* <div className='slider__arrow right'>
-            <span className='arrow'
-            onClick={() => { document.getElementById(id).scrollLeft += (window.innerWidth - 80); }}
-            >
-              {">"}
-            </span>
-          </div>
-        </div> */}
       </Swiper>
 
       {modalOpen && (
