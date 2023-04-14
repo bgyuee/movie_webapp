@@ -1,0 +1,4 @@
+displayName
+email
+phoneNumber
+photoURL

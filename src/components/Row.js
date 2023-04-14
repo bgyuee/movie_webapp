@@ -39,7 +39,7 @@ function Row({isLargeRow, title, id, fetchUrl}) {
       <Swiper
        modules={[Navigation, Pagination, Scrollbar, A11y]}
        navigation // arrow 버튼 사용 유무
-       pagination={{ clickable: true }} //페이지 버튼 보이게 할지 (동그라미)
+      //  pagination={{ clickable: true }} //페이지 버튼 보이게 할지 (동그라미)
        loop={true} //무한롤링
        breakpoints={{ //각각의 해상도에따라서 몇개가 보이게 할거냐
         1378:{

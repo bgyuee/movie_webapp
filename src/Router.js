@@ -3,9 +3,9 @@ import { Outlet, Route, Routes } from "react-router-dom";
 import Nav from "components/Nav";
 import Footer from "components/Footer";
 import Mainpage from "routes/Mainpage";
-import Detailpage from "routes/Detailpage";
 import Searchpage from "routes/Searchpage";
 import Auth from 'routes/Auth';
+import Mypage from 'routes/Mypage';
 
 function AppRouter({isLoggedIn, userObj}) {
 
@@ -24,14 +24,14 @@ function AppRouter({isLoggedIn, userObj}) {
       <Routes>
         {isLoggedIn ? (
           <Route path="/" element={<Layout />}>
-          <Route index path="" element={<Mainpage />} /> {/* index => localhost:3000/ 즉 path ="/"이거랑 같다 부모의 주소를 그대로 가져온다 */}
-          <Route path=":movieId" element={<Detailpage />} /> {/*localhost:3000/863  부모주소기준/863  ":movieId"이건 Params값 */}
-          <Route path="search" element={<Searchpage />} />  {/* localhost:3000/search  부모주소기준/search */}
-        </Route>
-        ) : (
-          <Route path='/' element={<Auth />} />
-        )}
-      </Routes>
+            <Route index path="" element={<Mainpage />} /> {/* index => localhost:3000/ 즉 path ="/"이거랑 같다 부모의 주소를 그대로 가져온다 */}
+            <Route path="search" element={<Searchpage />} />  {/* localhost:3000/search  부모주소기준/search */}
+            <Route path='mypage' element={<Mypage userObj = {userObj} />} />
+          </Route>
+          ) : (
+            <Route path='/' element={<Auth />} />
+          )}
+        </Routes>
     </>
   )
 }

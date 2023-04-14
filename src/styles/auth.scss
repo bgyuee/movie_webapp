@@ -1,0 +1,111 @@
+
+.auth_wrap{
+  position: relative;
+  left: calc(50% - 250px);
+  width: 500px;
+  height: 100vh !important;
+  min-width: 500px;
+  height: 100%;
+
+    h2{
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 50px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+  .error{
+    position: absolute;
+    top: 28%;
+    width: 100%;
+    text-align: center;
+    color: red;
+  }
+
+   .auth_content{
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 85%;
+
+    input, button{
+      width: 100%;
+      border: none;
+      border-radius: 6px;
+    }
+    
+    .auth_email, .auth_passwword{
+      position: relative;
+      margin-bottom: 10px;
+      padding-left: 10px;
+      height: 50px;
+      &[value]{
+        font-size: 20px;
+      }
+    }
+      .auth_email::placeholder, .auth_passwword::placeholder{
+        position: absolute;
+        top: calc(50% - 12.5px);
+        left: 10px;
+        font-size: 20px;
+      } 
+    .auth_submit{
+      margin: 10px 0;
+      width: 100%;
+      height: 50px;
+      border-radius: 50px;
+      background-color: #C90539;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.1s ease-in-out 0s;
+        &:hover{
+          background-color: #aa0c36;
+        }
+    }
+
+    .auth_convert{
+      position: absolute;
+      right: 0;
+      text-decoration: underline;
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+        &:hover{color: #1212de;}
+    }
+
+    .auth_another{
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+      width: 100%;
+      height: 65px;
+        button{
+          width: 48%;
+          height: 100%;
+          cursor: pointer;
+          text-indent: -9999px;
+          overflow: hidden;
+          border-radius: 50px;
+          opacity: 0.8;
+          transition: all 0.1s ease-in-out 0s;
+            &:hover{
+              opacity: 1;
+            }
+          &.auth_google{
+            background: url(../images/google.png) no-repeat 50% 50%, #fff;
+            background-size: cover;
+          }
+          &.auth_github{
+            background: url(../images/github.png) no-repeat 50% 50%;
+            background-size: cover;
+          }
+        }
+    }
+  }
+}

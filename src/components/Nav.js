@@ -1,3 +1,4 @@
+import { authService } from 'fbase';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "styles/Nav.scss";
@@ -30,6 +31,8 @@ const onChange = (e) => {
   } 
 }
 
+
+
 // onClick={() => {window.location.reload()}} 누룰때마다 새로고침이 되게한다
   return (
     <nav className={`nav ${show && "nav__black"}`}>
@@ -39,7 +42,8 @@ const onChange = (e) => {
       <input type='search' placeholder='영화를 검색해주세요' className='nav__input' 
         onChange={onChange} value={searchValue} />
 
-      <img className='nav__avatar' src='https://occ-0-4796-988.1.nflxso.net/dnm/api/v6/K6hjPJd6cR6FpVELC5Pd6ovHRSk/AAAABbme8JMz4rEKFJhtzpOKWFJ_6qX-0y5wwWyYvBhWS0VKFLa289dZ5zvRBggmFVWVPL2AAYE8xevD4jjLZjWumNo.png?r=a41' alt='User' />
+      <img className='nav__avatar' src='https://occ-0-4796-988.1.nflxso.net/dnm/api/v6/K6hjPJd6cR6FpVELC5Pd6ovHRSk/AAAABbme8JMz4rEKFJhtzpOKWFJ_6qX-0y5wwWyYvBhWS0VKFLa289dZ5zvRBggmFVWVPL2AAYE8xevD4jjLZjWumNo.png?r=a41' alt='User'
+       onClick={() => navigate('mypage')} />
     </nav>
   )
 }
