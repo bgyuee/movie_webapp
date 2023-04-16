@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 
 function useOnClickOutside(ref, handler) {
   useEffect(() => {
-    console.log('ref ->', ref); //ref.current는 div.class 모달창
+    // console.log('ref ->', ref); //ref.current는 div.class 모달창
 
     const listener = (event) => {
       if(!ref.current || ref.current.contains(event.target)) { //div.class모달창이 null이면 || 타겟이 되는애가 모달창안에 포함이 되어잇으면

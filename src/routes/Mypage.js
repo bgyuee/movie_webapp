@@ -7,11 +7,9 @@ import styled from 'styled-components';
 
 function Mypage({userObj}) {
 // console.log(userObj);
-const {displayName, email, phoneNumber, photoURL, uid} = userObj
+const {displayName, photoURL, uid} = userObj
 
   const [nickname, setNickname] = useState(displayName);
-  const [useremail, setUseremail] = useState(email);
-  const [userphonenumber, setUserphonenumber] = useState(phoneNumber);
   const [attachment, setAttachment] = useState(photoURL);
 
   const navigate = useNavigate();
@@ -29,8 +27,6 @@ const {displayName, email, phoneNumber, photoURL, uid} = userObj
     console.log(e);
 
     if(name === 'nickname') setNickname(value);
-    if(name === 'email') setUseremail(value);
-    if(name === 'phonenumber') setUserphonenumber(value);
   }
 
   const onFilechange = e => {
@@ -60,8 +56,6 @@ const {displayName, email, phoneNumber, photoURL, uid} = userObj
       }
       await updateProfile(userObj, {
         displayName: nickname,
-        email: useremail,
-        phoneNumber: userphonenumber,
         photoURL: attachmentUrl || photoURL
       });
       
@@ -82,10 +76,6 @@ const {displayName, email, phoneNumber, photoURL, uid} = userObj
         <label htmlFor='profileImg_add'>이미지 추가</label>
         <form className='profie_information' onSubmit={onSubmit}>
           <input type='text' name='nickname' placeholder={nickname}  
-            onChange={onChange}/>
-          <input type='email' name='email' placeholder={useremail} 
-            onChange={onChange}/>
-          <input type='tel' name='phonenumber' placeholder={userphonenumber}
             onChange={onChange}/>
           <input id='profileImg_add' className='blind' type='file' accept='image/*'
             onChange={onFilechange} />

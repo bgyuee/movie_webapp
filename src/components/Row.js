@@ -14,8 +14,8 @@ function Row({isLargeRow, title, id, fetchUrl}) {
   const [movies, setMovies] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [movieSelected, setMovieSelected] = useState({}); //비어있는 object(객체)
-  console.log('movieSelected ->', movieSelected);
-  console.log('movies ->', movies);
+  // console.log('movieSelected ->', movieSelected);
+  // console.log('movies ->', movies);
 
   useEffect(() => {
     fetchMovieData();
@@ -23,12 +23,12 @@ function Row({isLargeRow, title, id, fetchUrl}) {
 
   const fetchMovieData = async () => {
    const request = await axios.get(fetchUrl);
-   console.log(request);
+  //  console.log(request);
    setMovies(request.data.results);
   }
 
   const handleClick = (movie) => {
-    console.log('movie->',movie);
+    // console.log('movie->',movie);
     setModalOpen(true);
     setMovieSelected(movie);
   }
@@ -61,9 +61,8 @@ function Row({isLargeRow, title, id, fetchUrl}) {
       >
           <div id={id} className='row__posters'>
             {movies.map((movie) => (
-              <SwiperSlide>
+              <SwiperSlide key={movie.id}>
               <img
-                key={movie.id}
                 onClick={() => handleClick(movie)}
                 className={`row__poster ${isLargeRow && "row__posterLarge"}`}
                 src={`https://image.tmdb.org/t/p/original/${isLargeRow ? movie.poster_path : movie.backdrop_path}`} //큰이미지:작은이미지

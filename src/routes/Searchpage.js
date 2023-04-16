@@ -15,7 +15,7 @@ function Searchpage() {
   const useQuery = () => {
     return new URLSearchParams(useLocation().search);
   }
-  console.log('useLocation()->', useLocation());
+  // console.log('useLocation()->', useLocation());
 
   let query = useQuery();
 

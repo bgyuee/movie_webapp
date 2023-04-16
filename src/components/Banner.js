@@ -18,13 +18,13 @@ function Banner() {
   const fetchData = async () => {
     //현재 상영중인 영화 정보를 가져오기(20개 영화)
     const request = await axios.get(requests.fetchNowPlaying); //기존에 axios로 했을대는 주소를 한꺼번에 했는데 이번에는 직접 axsio를 만들어서 baseurl이랑  params안에 api키까지 다 지정해놓고, requests라는 파일을 만들어 안에 상세한 주소까지넣어서 주소를 안치고 쉽게 받아올수있다
-    console.log('request --->',request);
+    // console.log('request --->',request);
 
     // 20 개 영화중에서 영화 하나의 ID를 랜덤하게 가져오기
     const movieId = request.data.results[
       Math.floor(Math.random() * request.data.results.length +0) //0 ~ 19인덱스번호의 데이터들이 있는데 이중에서 하나를 랜덤으로 선택해 거기에서의 id값을 뽑아낸다
     ].id;
-    console.log(movieId);
+    // console.log(movieId);
 
     // 특정 영화의 더 상세한 정보를 가져오기(videos 비디오 정보도 포함)
     // https://api.themoviedb.org/3/movie/157336?api_key={api_key}&append_to_response=videos
@@ -35,7 +35,7 @@ function Banner() {
       params : {append_to_response: "videos"} //movieId를 가져올때, 해당 영화 정보에 관련된 비디오정보를 추가적으로 가져와라고 설정
     });
       setMovie(movieDetail);
-      console.log(`movieDetail ->>`, movieDetail);
+      // console.log(`movieDetail ->>`, movieDetail);
   }
 
   const truncate = (str, n) => {

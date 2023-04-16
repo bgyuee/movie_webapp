@@ -7,12 +7,12 @@ function MovieModal({
   selectedMovie, setModalOpen, backdrop_path, overview, release_date, first_air_date, title, name, vote_average, id, genre_ids
 }) 
 {
-  console.log('genre_ids', genre_ids);
+  // console.log('genre_ids', genre_ids);
   const [selectgenre, setSelectgenre] = useState([]);
 
   useEffect(() => {
     fetchGenre();
-  },[selectedMovie])
+  },[genre_ids])
 
   // https://api.themoviedb.org/3/genre/movie/list?api_key=<<api_key>>&language=en-US
   const fetchGenre = async () => {
@@ -31,7 +31,7 @@ function MovieModal({
   }
 
 
-  console.log('selectedMovie ->', selectedMovie);
+  // console.log('selectedMovie ->', selectedMovie);
   const ref = useRef();// 돔을 직접조작하기위해 useRef를 사용한다 id처럼 사용한다
 
   useonClickOutside(ref, () => {setModalOpen(false)}); //모달창 바깥을 클릭하면 적용
