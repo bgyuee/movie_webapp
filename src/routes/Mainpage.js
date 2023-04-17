@@ -7,7 +7,7 @@ function Mainpage() {
   return (
     <div>
       <Banner />
-      <Row title="NETFLIX ORIGINALS" id="NO" fetchUrl={requests.fetchNetflixOriginals} isLargeRow />
+      <Row title="NETFLIX ORIGINALS" id="NO" fetchUrl={requests.fetchNetflixOriginals} />
       <Row title="Trending Now" id="Tn" fetchUrl={requests.fetchTrending} />
       <Row title="Top Rated" id="TR" fetchUrl={requests.fetchTopRated} />
       <Row title="Animation Movie" id="AM" fetchUrl={requests.fetchAnimationMovies} />

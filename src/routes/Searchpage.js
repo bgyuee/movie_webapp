@@ -4,14 +4,16 @@ import { useLocation } from 'react-router-dom';
 import "../styles/Searchpage.scss";
 import useDebounce from 'hooks/useDebounce';
 import MovieModal from 'components/MovieModal';
+import { AxiosError } from 'axios';
 
 function Searchpage() {
   const [searchResults, setSearchResults] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState("");
   const [ModalOpen, setModalOpen] = useState(false);
+  const [movievideos, setMovievideos]  = useState("");
 
-  console.log('selectedMovie ->', selectedMovie);
-
+  // console.log('selectedMovie ->', selectedMovie);
+  
   const useQuery = () => {
     return new URLSearchParams(useLocation().search);
   }
@@ -31,15 +33,17 @@ function Searchpage() {
   const fetchSearchMovie = async () => {
     try {
       const request = await axios.get(`/search/movie?include_adult=false&query=${debounceSerarchTerm}`);
-      console.log(`request ->`, request);
+      // console.log(`request ->`, request);
       setSearchResults(request.data.results);
     } catch (error) {
       console.log('error -> ', error);
     }
   }
 
-  const handleMovieClick = (movie) => {
+  const handleMovieClick = async (movie) => {
+    const {data: movieDetail} = await axios.get(`/movie/${movie.id}`, {params : {append_to_response: "videos"}});
     setSelectedMovie(movie);
+    setMovievideos(movieDetail.videos); //비디오데이터
     setModalOpen(true);
   };
 
@@ -59,7 +63,7 @@ function Searchpage() {
           }
         })}
         {ModalOpen && (
-          <MovieModal {...selectedMovie} selectedMovie={selectedMovie} setModalOpen={setModalOpen} />
+          <MovieModal {...selectedMovie} setModalOpen={setModalOpen} />
         )}
       </section>
     ) : (

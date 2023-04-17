@@ -5,6 +5,8 @@
   &:hover .swiper-button-next{opacity: 1;}
   h2{
     padding-left: 20px;
+    font-size: 30px;
+    font-weight: 900;
   }
 
   /* swiper */
@@ -28,8 +30,11 @@
   .swiper-pagination-bullet-active{
     background: #fff !important;
   }
+
   .swiper{
-    padding: 10px 0 30px !important;
+    position: relative;
+    margin: 10px 0 30px !important;
+    overflow: visible !important;
   }
   
   .row__posters{
@@ -44,36 +49,41 @@
     display: none;
   }
   
-  .row__poster{
-    width: 100%;
-    max-height: 144px;
-    object-fit: contain;
-    margin-right: 10px;
-    border-radius: 4px;
-    transition: transform 450ms linear 0s;
+  .movie_slide{
+    position: relative;
+    padding: 0 10px;
+    box-sizing: border-box;
+    transition: all 400ms linear 0s;
+    &:hover{
+      z-index: 10;
+      transform: scale(1.5);
+    }
+
+    .row__poster{
+      width: 100%;
+      max-height: 170px;
+      object-fit: cover;
+      
+      border-radius: 4px;
+    }
+    .movie_information{
+      position: absolute;
+      width: calc(100% - 20px);
+      bottom: 0;
+      left: 10px;
+      font-size: 25px;
+      background-color: #181818;
+    }
+
   }
-  
-  .row__poster:hover{
-    transform: scale(1.08);
-  }
-  
-  .row__posterLarge{
-    max-height: 320px;
-  }
-  
-  .row__posterLarge:hover{
-    transform: scale(1.1);
-    opacity: 1;
-  }
+
 }
 
 @media screen and (min-width: 1200px) { /* 1200 ~ 최대 */
   .row__poster{max-height: 160px;}
-  .row__posterLarge{max-height: 360px;}
 }
 
 @media screen and (max-width: 768px) { /* 0~768 */
   .row__poster{max-height: 100px;}
-  .row__posterLarge{max-height: 280px;}
 }
 
