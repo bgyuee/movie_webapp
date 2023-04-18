@@ -20,7 +20,7 @@ function Row({title, id, fetchUrl}) {
   const [rowgenres, setRowgenres] = useState([]);
   const [selectgenre, setSelectgenre] = useState("");
   const [vidoeplay, setVideoplay] = useState(false);
-console.log(movievideos);
+  console.log('movievideos -> ', movievideos);
 
   useEffect(() => {
     fetchMovieData();
@@ -28,7 +28,6 @@ console.log(movievideos);
 
   useEffect(() => {
     fetchGenre();
-    fetchVideos();
   }, [movies]);
 
   const fetchMovieData = async () => {
@@ -54,28 +53,10 @@ console.log(movievideos);
     }
   }
 
-  const fetchVideos = async () => {
-    const videoRequests = movies.map((movie) =>
-      axios.get(`/movie/${movie.id}`, {
-        params: { append_to_response: "videos" },
-      })
-    );
-  
-    try {
-      const videoResponses = await Promise.all(videoRequests);
-      const movievideos = videoResponses.map((response) => response.data);
-      setMovievideos(movievideos);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  
-  
-
   const handleClick = async (movie, genre) => {
-    // const {data: movievideos} = await axios.get(`/movie/${movie.id}`, {params : {append_to_response: "videos"}});
+    const {data: movievideos} = await axios.get(`/movie/${movie.id}`, {params : {append_to_response: "videos"}});
     setMovieSelected(movie);
-    // setMovievideos(movievideos.videos); //영화데이터
+    setMovievideos(movievideos.videos); //영화데이터
     setSelectgenre(genre);
     setModalOpen(true);
   }
@@ -140,7 +121,8 @@ console.log(movievideos);
           <div id={id} className='row__posters'>
             {movies.map((movie, index) => (
               <SwiperSlide key={movie.id} className='movie_slide' 
-              onMouseOver={onMouseOver} onMouseLeave={onMouseLeave}>
+              onMouseOver={onMouseOver} onMouseLeave={onMouseLeave}
+              >
               <img
                 onClick={() => handleClick(movie, rowgenres[index])}
                 className={`row__poster`}
@@ -171,4 +153,4 @@ console.log(movievideos);
   )
 }
 
-export default Row;
+export default Row

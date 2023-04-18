@@ -12,7 +12,7 @@ function Searchpage() {
   const [ModalOpen, setModalOpen] = useState(false);
   const [movievideos, setMovievideos]  = useState("");
 
-  // console.log('selectedMovie ->', selectedMovie);
+  console.log('selectedMovie ->', selectedMovie);
   
   const useQuery = () => {
     return new URLSearchParams(useLocation().search);

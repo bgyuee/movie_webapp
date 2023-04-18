@@ -4,33 +4,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import "styles/MovieModal.scss";
 
 function MovieModal({
-  selectedMovie, setModalOpen, backdrop_path, overview, release_date, first_air_date, title, name, vote_average, id, genre_ids
+  setModalOpen, backdrop_path, overview, release_date, 
+  first_air_date, title, name, vote_average, id, selectgenre
 }) 
 {
-  // console.log('genre_ids', genre_ids);
-  const [selectgenre, setSelectgenre] = useState([]);
-
-  useEffect(() => {
-    fetchGenre();
-  },[genre_ids])
-
-  // https://api.themoviedb.org/3/genre/movie/list?api_key=<<api_key>>&language=en-US
-  const fetchGenre = async () => {
-    try {
-      const request = await axios.get(`/genre/movie/list`);
-      const genres = request.data.genres;
-      const selectedGenres = genre_ids.map(id => {
-        const genre = genres.find(g => g.id === id);
-        return genre ? genre.name : null;
-      });
-      setSelectgenre(selectedGenres);
-
-    }catch (error) {
-      console.log('error -> ', error);
-    }
-  }
-
-
+  
   // console.log('selectedMovie ->', selectedMovie);
   const ref = useRef();// 돔을 직접조작하기위해 useRef를 사용한다 id처럼 사용한다
 

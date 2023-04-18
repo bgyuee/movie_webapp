@@ -1,6 +1,10 @@
 .row{
   margin-left: 20px;
   color: #fff;
+  &:hover{
+    z-index: 10;
+    position: relative;
+  }
   &:hover .swiper-button-prev{opacity: 1;}
   &:hover .swiper-button-next{opacity: 1;}
   h2{
@@ -58,6 +62,9 @@
       z-index: 10;
       transform: scale(1.5);
     }
+    &:hover>.movie_information{
+      visibility: visible;
+    }
 
     .row__poster{
       width: 100%;
@@ -68,11 +75,35 @@
     }
     .movie_information{
       position: absolute;
+      padding: 10px 20px 0;
       width: calc(100% - 20px);
-      bottom: 0;
+      height: 120px;
+      bottom: -70%;
       left: 10px;
-      font-size: 25px;
+      font-size: 30px;
       background-color: #181818;
+      box-sizing: border-box;
+      visibility: hidden;
+      .movie_icon{
+        display: flex;
+        justify-content: space-between;
+          .movie_active{
+            display:flex;
+            justify-content: space-between;
+            width: 110px;
+          }
+          .info_icon{
+            opacity: 0.5;
+            &:hover{
+              opacity: 1;
+              cursor: pointer;
+            }
+          }
+      }
+      .movieinfo_genre{
+        font-size: 15px;
+      }
+        
     }
 
   }

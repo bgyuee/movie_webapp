@@ -83,7 +83,7 @@ function Banner() {
             width='640'
             height='360'
             frmaeborder="0"
-            allow="autoplay; fullscreen ">
+            allow="autoplay; fullscreen; ">
             </Iframe>
           </HomeContainer>
         </Container>
