@@ -11,17 +11,20 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
+import styled from 'styled-components';
+import { addDoc, collection } from 'firebase/firestore';
+import { db } from 'fbase';
 
-function Row({title, id, fetchUrl}) {
+function Row({title, id, fetchUrl, userUid}) {
   const [movies, setMovies] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
-  const [movieSelected, setMovieSelected] = useState(""); //비어있는 object(객체)
-  const [movievideos, setMovievideos]  = useState("");
+  const [movieSelected, setMovieSelected] = useState("");
+  const [movievideos, setMovievideos]  = useState(""); //비디오데이터까지 있는 영화데이터
   const [rowgenres, setRowgenres] = useState([]);
   const [selectgenre, setSelectgenre] = useState("");
-  const [vidoeplay, setVideoplay] = useState(false);
-console.log(movievideos);
-
+  const [vidoeplay, setVideoplay] = useState([]);
+  const [movieindex, setMovieindex] = useState("");
+  
   useEffect(() => {
     fetchMovieData();
   },[fetchUrl]); //componentDid update역활을 해준다
@@ -72,21 +75,38 @@ console.log(movievideos);
   
   
 
-  const handleClick = async (movie, genre) => {
-    // const {data: movievideos} = await axios.get(`/movie/${movie.id}`, {params : {append_to_response: "videos"}});
+  const handleClick = (movie, genre, index) => {
     setMovieSelected(movie);
-    // setMovievideos(movievideos.videos); //영화데이터
     setSelectgenre(genre);
+    setMovieindex(index);
     setModalOpen(true);
   }
 
-  const onMouseOver = () => {
-    setVideoplay(true);
-  }
-
-  const onMouseLeave = () => {
-    setVideoplay(false);
-  }
+  const onMouseOver = (index) => () => {
+    setVideoplay((prevState) => {
+      const newState = [...prevState];
+      newState[index] = true;
+      return newState;
+    });
+  };
+  
+  const onMouseLeave = (index) => () => {
+    setVideoplay((prevState) => {
+      const newState = [...prevState];
+      newState[index] = false;
+      return newState;
+    });
+  };
+  
+  const Dib = async (movieId) =>{
+    try {
+      const docRef = await addDoc(collection(db, `Dibs/${userUid}/movies`), {
+        movies: movieId
+      })
+    } catch(e) {
+      console.error(e);
+    }
+   }
 
   return (
     <section className='row' key={id}>
@@ -140,22 +160,40 @@ console.log(movievideos);
           <div id={id} className='row__posters'>
             {movies.map((movie, index) => (
               <SwiperSlide key={movie.id} className='movie_slide' 
-              onMouseOver={onMouseOver} onMouseLeave={onMouseLeave}>
-              <img
-                onClick={() => handleClick(movie, rowgenres[index])}
-                className={`row__poster`}
-                src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path}`} //큰이미지:작은이미지
-                loading='lazy'
-                alt={movie.title || movie.name || movie.original_name}
-              />
+              onMouseOver={onMouseOver(index)} onMouseLeave={onMouseLeave(index)}>
+              {!vidoeplay[index] ? (
+                 <img
+                 className={`row__poster`}
+                 src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path}`} //큰이미지:작은이미지
+                 loading='lazy'
+                 alt={movie.title || movie.name || movie.original_name}
+               />
+              ):(
+                 movievideos[index]?.videos?.results?.[0]?.key ? (
+                  <Iframe 
+                  src={`https://www.youtube.com/embed/${movievideos[index]?.videos?.results?.[0]?.key}?controls=0&autoplay=1&mute=1&playlist=${movievideos[index]?.videos?.results?.[0]?.key}`}
+                  />
+                ):(
+                  <img
+                  className={`row__poster`}
+                  src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path}`} //큰이미지:작은이미지
+                  loading='lazy'
+                  alt={movie.title || movie.name || movie.original_name}
+                />
+                )
+              )}
               <div className='movie_information'>
                 <div className='movie_icon'>
                   <div className='movie_active'>
-                    <span className='trailer_play info_icon' title='예고편 재생'><FaPlay /></span>
-                    <span className='WishList info_icon' title='찜하기'><FaPlus /></span>
+                    <span className='trailer_play info_icon' title='영화재생'><FaPlay /></span>
+                    <span className='WishList info_icon' title='찜하기' onClick={() => Dib(movie.id)}><FaPlus /></span>
                     <span className='like info_icon' title='좋아요'><FcLike /></span>
                   </div>
-                  <span className='information_more info_icon' title='상세정보'><GrCircleInformation /></span>
+                  <span className='information_more info_icon' title='상세정보'>
+                    <GrCircleInformation 
+                      onClick={() => handleClick(movie, rowgenres[index], index)}
+                    />
+                  </span>
                 </div>
                 <span className='movieinfo_genre'>{rowgenres[index]}</span>
               </div>
@@ -165,10 +203,21 @@ console.log(movievideos);
       </Swiper>
 
       {modalOpen && (
-        <MovieModal {...movieSelected} setModalOpen={setModalOpen} selectgenre={selectgenre} movievideos={movievideos}  /> //객체를 내보낼때 스프레디연산자를 사용하면 movie안에 있는 개체의 속성들을 다 내보내줄수 있다.
+        <MovieModal 
+          {...movieSelected} //객체를 내보낼때 스프레디연산자를 사용하면 movie안에 있는 개체의 속성들을 다 내보내줄수 있다.
+          setModalOpen={setModalOpen} 
+          selectgenre={selectgenre} 
+          movievideos={movievideos}  
+          movieindex={movieindex}
+        /> 
       )}
     </section>
   )
 }
 
+const Iframe = styled.iframe`
+  width: 100%;
+  height: 100%;
+  border: none;
+`
 export default Row;

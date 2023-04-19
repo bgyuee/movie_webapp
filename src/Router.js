@@ -24,7 +24,7 @@ function AppRouter({isLoggedIn, userObj}) {
       <Routes>
         {isLoggedIn ? (
           <Route path="/" element={<Layout />}>
-            <Route index path="" element={<Mainpage />} /> {/* index => localhost:3000/ 즉 path ="/"이거랑 같다 부모의 주소를 그대로 가져온다 */}
+            <Route index path="" element={<Mainpage {...userObj} />} /> {/* index => localhost:3000/ 즉 path ="/"이거랑 같다 부모의 주소를 그대로 가져온다 */}
             <Route path="search" element={<Searchpage />} />  {/* localhost:3000/search  부모주소기준/search */}
             <Route path='mypage' element={<Mypage userObj = {userObj} />} />
           </Route>
@@ -35,5 +35,6 @@ function AppRouter({isLoggedIn, userObj}) {
     </>
   )
 }
+
 
 export default AppRouter;

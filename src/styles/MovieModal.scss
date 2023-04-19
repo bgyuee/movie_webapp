@@ -13,11 +13,11 @@
     background-color: rgba(0, 0, 0, 0.71);
 
     .modal{
+      overflow-y: auto;
       position: relative;
       max-width: 800px;
       background-color: #111;
       color: #fff;
-      overflow: hidden;
       border-radius: 8px;
       box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 5px 8px 0px rgba(0, 0, 0, 0.14), 0px 1px 14px 0px rgba(0, 0, 0, 0.12);
       animation: fadeIn 400ms ease 0s;
@@ -66,6 +66,10 @@
         .modal__overview{
           font-style: 20px;
           line-height: 1.5;
+        }
+        .modal__movies{
+          display: flex;
+          flex-direction: column;
         }
         }
 
