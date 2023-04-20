@@ -12,7 +12,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import styled from 'styled-components';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDocs, query, where } from 'firebase/firestore';
 import { db } from 'fbase';
 
 function Row({title, id, fetchUrl, userUid}) {
@@ -24,6 +24,7 @@ function Row({title, id, fetchUrl, userUid}) {
   const [selectgenre, setSelectgenre] = useState("");
   const [vidoeplay, setVideoplay] = useState([]);
   const [movieindex, setMovieindex] = useState("");
+  const [wishList, setWishList] = useState(false);
   
   useEffect(() => {
     fetchMovieData();
@@ -72,8 +73,6 @@ function Row({title, id, fetchUrl, userUid}) {
       console.error(error);
     }
   };
-  
-  
 
   const handleClick = (movie, genre, index) => {
     setMovieSelected(movie);
@@ -82,7 +81,9 @@ function Row({title, id, fetchUrl, userUid}) {
     setModalOpen(true);
   }
 
-  const onMouseOver = (index) => () => {
+  const onMouseOver = (index, moiveId) => () => {
+    isMovieDibbed(userUid, moiveId);
+
     setVideoplay((prevState) => {
       const newState = [...prevState];
       newState[index] = true;
@@ -98,15 +99,52 @@ function Row({title, id, fetchUrl, userUid}) {
     });
   };
   
-  const Dib = async (movieId) =>{
-    try {
-      const docRef = await addDoc(collection(db, `Dibs/${userUid}/movies`), {
-        movies: movieId
-      })
-    } catch(e) {
-      console.error(e);
+  /*---------------------------------------------- 찜하기 -------------------------------------------------------*/
+  // 해당 무비상세정보를 클릭했을때 토글처럼 추가 or 삭제기능
+  const Dib = async (userUid, movieId) => {
+    const isDibbed = await isMovieDibbed(userUid, movieId);
+
+    if(isDibbed) {
+      await deleteMovie(userUid, movieId);
+    }else {
+      try {
+        const docRef = await addDoc(collection(db, `Dibs/${userUid}/movies`), {
+          movies: movieId
+        });
+        setWishList(true);
+      } catch(e) {
+        console.error(e);
+      }
     }
-   }
+  }
+
+  // 해당 movieId가 있는지 확인
+  const isMovieDibbed = async (userUid, movieId) => {
+    const movieRef = collection(db, `Dibs/${userUid}/movies`);
+    const q = query(movieRef, where(`movies`, `==`, movieId));
+    const querySnapshot = await getDocs(q);
+    // console.log('querySnapshot =>', querySnapshot);
+
+    (!querySnapshot.empty? (setWishList(true)):(setWishList(false)));
+
+    return !querySnapshot.empty;
+  };
+
+  const deleteMovie = async (userUid, movieId) => {
+    const movieRef = collection(db, `Dibs/${userUid}/movies`);
+    const q = query(movieRef, where(`movies`, `==`, movieId));
+    const querySnapshot = await getDocs(q);
+
+    if(!querySnapshot.empty) {
+      querySnapshot.forEach(movie => {
+        deleteDoc(doc(db, `Dibs/${userUid}/movies`, movie.id));
+        setWishList(false);
+      });
+    }else {
+      console.log('삭제할 영화가 없습니다.');
+    }
+  }
+ /*---------------------------------------------- //찜하기 -------------------------------------------------------*/
 
   return (
     <section className='row' key={id}>
@@ -160,7 +198,7 @@ function Row({title, id, fetchUrl, userUid}) {
           <div id={id} className='row__posters'>
             {movies.map((movie, index) => (
               <SwiperSlide key={movie.id} className='movie_slide' 
-              onMouseOver={onMouseOver(index)} onMouseLeave={onMouseLeave(index)}>
+              onMouseOver={onMouseOver(index, movie.id)} onMouseLeave={onMouseLeave(index)}>
               {!vidoeplay[index] ? (
                  <img
                  className={`row__poster`}
@@ -186,7 +224,7 @@ function Row({title, id, fetchUrl, userUid}) {
                 <div className='movie_icon'>
                   <div className='movie_active'>
                     <span className='trailer_play info_icon' title='영화재생'><FaPlay /></span>
-                    <span className='WishList info_icon' title='찜하기' onClick={() => Dib(movie.id)}><FaPlus /></span>
+                    <span className={`WishList info_icon ${wishList && "icon_checked"}`} title='찜하기' onClick={() => Dib(userUid, movie.id)}><FaPlus /></span>
                     <span className='like info_icon' title='좋아요'><FcLike /></span>
                   </div>
                   <span className='information_more info_icon' title='상세정보'>

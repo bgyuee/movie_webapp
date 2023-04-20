@@ -1,18 +1,20 @@
-import { authService, storage } from 'fbase';
+import Usermovie from 'components/Usermovie';
+import { authService, db, storage } from 'fbase';
 import { updateProfile } from 'firebase/auth';
+import { collection, doc, getDocs } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadString } from 'firebase/storage';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 function Mypage({userObj}) {
 // console.log(userObj);
-const {displayName, photoURL, uid} = userObj
-
+  const {displayName, photoURL, uid} = userObj
   const [nickname, setNickname] = useState(displayName);
   const [attachment, setAttachment] = useState(photoURL);
 
   const navigate = useNavigate();
+
 
   const onLogOutClick = () => {
     const ok = window.confirm("로그아웃 하시겠습니까?");
@@ -81,6 +83,7 @@ const {displayName, photoURL, uid} = userObj
             onChange={onFilechange} />
           <input type='submit' value="수정하기" />
         </form>
+        <Usermovie userObj={userObj}/>
       </MypageContent>
     </MypageContainer>
   )
@@ -130,5 +133,6 @@ const MypageContent = styled.div`
     flex-direction: column;
   }
 `;
+
 
 export default Mypage;
