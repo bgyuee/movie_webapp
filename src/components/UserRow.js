@@ -1,5 +1,5 @@
+import React, { useState } from 'react';
 import axios from 'api/axios';
-import React, { useEffect, useState } from 'react';
 import MovieModal from 'components/MovieModal';
 import "styles/Row.scss";
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
@@ -15,92 +15,17 @@ import styled from 'styled-components';
 import { addDoc, collection, deleteDoc, doc, getDocs, query, where } from 'firebase/firestore';
 import { db } from 'fbase';
 
-function Row({title, id, fetchUrl, userUid, istv}) {
-  const [movies, setMovies] = useState([]);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [movieSelected, setMovieSelected] = useState("");
-  const [movievideos, setMovievideos]  = useState(""); //비디오데이터까지 있는 영화데이터
-  const [rowgenres, setRowgenres] = useState([]);
-  const [selectgenre, setSelectgenre] = useState("");
-  const [vidoeplay, setVideoplay] = useState([]);
-  const [movieindex, setMovieindex] = useState("");
+function UserRow({movies, title, userUid}) {
+
+  const [genres] = movies;
+
   const [wishList, setWishList] = useState(false);
-  
-  useEffect(() => {
-    fetchMovieData();
-  },[fetchUrl]); //componentDid update역활을 해준다
+  const [vidoeplay, setVideoplay] = useState([]);
+  const [movieSelected, setMovieSelected] = useState("");
+  const [selectgenre, setSelectgenre] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [movieindex, setMovieindex] = useState("");
 
-  useEffect(() => {
-    if (movies.length > 0) {
-      fetchGenre();
-      fetchVideos();
-    }
-  }, [movies]);
-
-  const fetchMovieData = async () => {
-    const request = await axios.get(fetchUrl);
-
-    setMovies(request.data.results);
-  }
-
-  const fetchGenre = async () => {
-    try {
-      const request = await axios.get(`/genre/movie/list`);
-      const genres = request.data.genres;
-      const rowGenres = movies.map(movie => (
-        movie.genre_ids.map(id => {
-          const genre = genres.find(g => g.id === id);
-          return genre ? genre.name : null;
-        })
-      ));
-      setRowgenres(rowGenres);
-    }catch (error) {
-      console.log('error -> ', error);
-    }
-  }
-
-  const fetchVideos = async () => {
-    try {
-      const videoRequests = movies.map((movie) => {
-        const url = istv ? `/tv/${movie.id}` : `/movie/${movie.id}`;
-        return axios.get(url, {
-          params: { append_to_response: "videos" },
-        });
-      });
-
-      const videoResponses = await Promise.all(videoRequests);
-      const movieVideos = videoResponses.map((response) => response.data);
-      setMovievideos(movieVideos);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleClick = (movie, genre, index) => {
-    setMovieSelected(movie);
-    setSelectgenre(genre);
-    setMovieindex(index);
-    setModalOpen(true);
-  }
-
-  const onMouseOver = (index, moiveId) => () => {
-    isMovieDibbed(userUid, moiveId);
-
-    setVideoplay((prevState) => {
-      const newState = [...prevState];
-      newState[index] = true;
-      return newState;
-    });
-  };
-  
-  const onMouseLeave = (index) => () => {
-    setVideoplay((prevState) => {
-      const newState = [...prevState];
-      newState[index] = false;
-      return newState;
-    });
-  };
-  
   /*---------------------------------------------- 찜하기 -------------------------------------------------------*/
   // 해당 무비상세정보를 클릭했을때 토글처럼 추가 or 삭제기능
   const Dib = async (userUid, movieId) => {
@@ -148,32 +73,35 @@ function Row({title, id, fetchUrl, userUid, istv}) {
   }
  /*---------------------------------------------- //찜하기 -------------------------------------------------------*/
 
+
+ const handleClick = (movie, genre, index) => {
+  setMovieSelected(movie);
+  setSelectgenre(genre);
+  setMovieindex(index);
+  setModalOpen(true);
+}
+
+  const onMouseOver = (index, moiveId) => () => {
+    isMovieDibbed(userUid, moiveId);
+
+    setVideoplay((prevState) => {
+      const newState = [...prevState];
+      newState[index] = true;
+      return newState;
+    });
+  };
+  
+  const onMouseLeave = (index) => () => {
+    setVideoplay((prevState) => {
+      const newState = [...prevState];
+      newState[index] = false;
+      return newState;
+    });
+  };
+
   return (
-    <section className='row' key={id}>
-      <h2>
-      {(() => {
-      switch(title) {
-        case "NETFLIX ORIGINALS":
-          return "오리지널";
-        case "Trending Now":
-          return "지금 뜨는 콘텐츠";
-        case "Top Rated":
-          return "인기 콘텐츠";
-        case "Animation Movie":
-          return "애니메이션";
-        case "Family Movie":
-          return "가족";
-        case "Adventure Movie":
-          return "모험"
-        case "Science Movie":
-          return "과학";
-        case "Action Movie":
-          return "액션";
-        default:
-          return title;
-      }
-    })()}
-      </h2>
+    <section className='row'>
+      <h2>{title}</h2>
       <Swiper
        modules={[Navigation, Pagination, Scrollbar, A11y]}
        navigation // arrow 버튼 사용 유무
@@ -197,7 +125,7 @@ function Row({title, id, fetchUrl, userUid, istv}) {
           slidesPerGroup: 2 
         }}}
       >
-          <div id={id} className='row__posters'>
+          <div className='row__posters'>
             {movies.map((movie, index) => (
               <SwiperSlide key={movie.id} className='movie_slide' 
               onMouseOver={onMouseOver(index, movie.id)} onMouseLeave={onMouseLeave(index)}>
@@ -209,9 +137,9 @@ function Row({title, id, fetchUrl, userUid, istv}) {
                  alt={movie.title || movie.name || movie.original_name}
                />
               ):(
-                 movievideos[index]?.videos?.results?.[0]?.key ? (
+                 movies[index]?.videos?.results?.[0]?.key ? (
                   <Iframe 
-                  src={`https://www.youtube.com/embed/${movievideos[index]?.videos?.results?.[0]?.key}?controls=0&autoplay=1&mute=1&playlist=${movievideos[index]?.videos?.results?.[0]?.key}`}
+                  src={`https://www.youtube.com/embed/${movies[index]?.videos?.results?.[0]?.key}?controls=0&autoplay=1&mute=1&playlist=${movies[index]?.videos?.results?.[0]?.key}`}
                   />
                 ):(
                   <img
@@ -231,11 +159,11 @@ function Row({title, id, fetchUrl, userUid, istv}) {
                   </div>
                   <span className='information_more info_icon' title='상세정보'>
                     <GrCircleInformation 
-                      onClick={() => handleClick(movie, rowgenres[index], index)}
+                      onClick={() => handleClick(movie, genres, index)}
                     />
                   </span>
                 </div>
-                <span className='movieinfo_genre'>{rowgenres[index]}</span>
+                <span className='movieinfo_genre'>{genres}</span>
               </div>
               </SwiperSlide>
             ))}
@@ -244,10 +172,10 @@ function Row({title, id, fetchUrl, userUid, istv}) {
 
       {modalOpen && (
         <MovieModal 
-          {...movieSelected} //객체를 내보낼때 스프레디연산자를 사용하면 movie안에 있는 개체의 속성들을 다 내보내줄수 있다.
+          movieSelected={movieSelected} //객체를 내보낼때 스프레디연산자를 사용하면 movie안에 있는 개체의 속성들을 다 내보내줄수 있다.
           setModalOpen={setModalOpen} 
           selectgenre={selectgenre} 
-          movievideos={movievideos}  
+          movievideos={movies}  
           movieindex={movieindex}
         /> 
       )}
@@ -260,4 +188,5 @@ const Iframe = styled.iframe`
   height: 100%;
   border: none;
 `
-export default Row;
+
+export default UserRow

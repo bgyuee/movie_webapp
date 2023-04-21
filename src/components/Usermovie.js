@@ -3,10 +3,11 @@ import { db } from 'fbase';
 import { collection, getDocs } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import UserRow from './UserRow';
+
 
 function Usermovie({userObj}) {
   const {uid} = userObj
-
   const [userwishList, setUserwishList] = useState("");
   const [wishListmovie, setWishListmovie] = useState([]);
   console.log('wishListmovie ->', wishListmovie);
@@ -33,8 +34,6 @@ const fetchVideos = async () => {
   try {
     console.log("userwishList:", userwishList);
     const movieListPromises = userwishList.map(async (movie) => {
-      // 영화 ID가 유효한지 확인
-      if (movie && typeof movie === "number") {
         try {
           return await axios.get(`/movie/${movie}`, {
             params: { append_to_response: "videos" },
@@ -43,13 +42,8 @@ const fetchVideos = async () => {
           console.error(`Error fetching movie with ID ${movie}:`, error);
           return null;
         }
-      } else {
-        return null;
-      }
     });
-    console.log('movieListPromises ->', movieListPromises);
-
-    // movieListPromises를 기다리고 각 해결된 프라미스에서 data를 추출
+    // movieListPromises를 기다리고 각 해결된 promise에서 data를 추출
     const movieListResponses = await Promise.all(movieListPromises);
     const movieList = movieListResponses
       .filter((response) => response !== null) // 영화 ID가 유효하지 않은 경우 필터링
@@ -71,22 +65,16 @@ useEffect(() => {
   
   /* ---------------------------------------------------------//영화불러오기----------------------------------------------------------------------- */
 
-
-
-
   return (
     <MovieContent>
-      <h3>내가 찜한 영화</h3>
-      <div className='content_wishList'>
-        {/* <Iframe src={`https://www.youtube.com/embed/${movievideos[index]?.videos?.results?.[0]?.key}?controls=0&autoplay=1&mute=1&playlist=${movievideos[index]?.videos?.results?.[0]?.key}`}/> */}
-      </div>
-      <h3>내가 좋아하는 영화</h3>
-      <div className='content_like'></div>
+      <UserRow
+      movies={wishListmovie} 
+      title="내가 찜한 목록"
+      userUid={userObj.uid}
+       />
     </MovieContent>
   )
 }
-
-
 
 const MovieContent = styled.div`
   h3{color:#fff;}

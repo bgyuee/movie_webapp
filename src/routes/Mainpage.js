@@ -8,7 +8,7 @@ function Mainpage({uid}) {
   return (
     <div>
       <Banner />
-      <Row title="NETFLIX ORIGINALS" id="NO" fetchUrl={requests.fetchNetflixOriginals} userUid={uid}/>
+      <Row title="NETFLIX ORIGINALS" id="NO" fetchUrl={requests.fetchNetflixOriginals} userUid={uid} istv />
       <Row title="Trending Now" id="Tn" fetchUrl={requests.fetchTrending} userUid={uid} />
       <Row title="Top Rated" id="TR" fetchUrl={requests.fetchTopRated} userUid={uid}/>
       <Row title="Animation Movie" id="AM" fetchUrl={requests.fetchAnimationMovies} userUid={uid} />

@@ -12,9 +12,9 @@ function Mypage({userObj}) {
   const {displayName, photoURL, uid} = userObj
   const [nickname, setNickname] = useState(displayName);
   const [attachment, setAttachment] = useState(photoURL);
+  
 
   const navigate = useNavigate();
-
 
   const onLogOutClick = () => {
     const ok = window.confirm("로그아웃 하시겠습니까?");
