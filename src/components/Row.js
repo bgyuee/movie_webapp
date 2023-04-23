@@ -25,6 +25,8 @@ function Row({title, id, fetchUrl, userUid, istv}) {
   const [vidoeplay, setVideoplay] = useState([]);
   const [movieindex, setMovieindex] = useState("");
   const [wishList, setWishList] = useState(false);
+  const [likeList, setLikeList] = useState(false);
+  const [likeTotal, setLikeTotal] = useState(0);
   
   useEffect(() => {
     fetchMovieData();
@@ -36,6 +38,7 @@ function Row({title, id, fetchUrl, userUid, istv}) {
       fetchVideos();
     }
   }, [movies]);
+
 
   const fetchMovieData = async () => {
     const request = await axios.get(fetchUrl);
@@ -85,6 +88,7 @@ function Row({title, id, fetchUrl, userUid, istv}) {
 
   const onMouseOver = (index, moiveId) => () => {
     isMovieDibbed(userUid, moiveId);
+    isLikeUser(userUid, moiveId);
 
     setVideoplay((prevState) => {
       const newState = [...prevState];
@@ -142,11 +146,61 @@ function Row({title, id, fetchUrl, userUid, istv}) {
         deleteDoc(doc(db, `Dibs/${userUid}/movies`, movie.id));
         setWishList(false);
       });
-    }else {
-      console.log('삭제할 영화가 없습니다.');
     }
   }
  /*---------------------------------------------- //찜하기 -------------------------------------------------------*/
+ /*-----------------------------------------------좋아요 -------------------------------------------------------*/
+  const Like = async (userUid, movieId) => {
+    const isLiked = await isLikeUser(userUid, movieId);
+
+    if(isLiked) {
+      await deleteLike(userUid, movieId);
+    }else {
+      try {
+        const docRef = await addDoc(collection(db, `Likes/${movieId}/${userUid}`), {
+          userid: userUid
+        });
+        setLikeList(true);
+      }catch(e) {
+        console.error(e);
+      }
+    }
+  }
+
+  // movie에 해당 유저가 있는지 확인
+  const isLikeUser = async (userUid, movieId) => {
+    const movieRef = collection(db, `Likes/${movieId}/${userUid}`);
+    const q = query(movieRef, where(`userid`, `==`, `${userUid}`));
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      setLikeList(true);
+      setLikeTotal(querySnapshot.size);
+    } else {
+      setLikeList(false);
+      setLikeTotal(0);
+    }
+
+    return !querySnapshot.empty;
+  };
+  // Like삭제
+  const deleteLike = async (userUid, movieId) => {
+    const movieRef = collection(db, `Likes/${movieId}/${userUid}`);
+    const q = query(movieRef, where(`userid`, `==`, `${userUid}`));
+    const querySnapshot = await getDocs(q);
+
+    if(!querySnapshot.empty) {
+      querySnapshot.forEach(user => {
+        deleteDoc(doc(db, `Likes/${movieId}/${userUid}`, user.id));
+        setLikeList(false);
+      });
+    }
+  }
+
+
+
+
+
+ /*-----------------------------------------------//좋아요 -------------------------------------------------------*/
 
   return (
     <section className='row' key={id}>
@@ -227,7 +281,7 @@ function Row({title, id, fetchUrl, userUid, istv}) {
                   <div className='movie_active'>
                     <span className='trailer_play info_icon' title='영화재생'><FaPlay /></span>
                     <span className={`WishList info_icon ${wishList && "icon_checked"}`} title='찜하기' onClick={() => Dib(userUid, movie.id)}><FaPlus /></span>
-                    <span className='like info_icon' title='좋아요'><FcLike /></span>
+                    <span className={`like info_icon ${likeList && "icon_checked"}`} title='좋아요' onClick={() => Like(userUid, movie.id)}><FcLike /><strong>+{likeTotal}</strong></span>
                   </div>
                   <span className='information_more info_icon' title='상세정보'>
                     <GrCircleInformation 

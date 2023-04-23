@@ -68,7 +68,7 @@ useEffect(() => {
   return (
     <MovieContent>
       <UserRow
-      movies={wishListmovie} 
+      movies={wishListmovie}
       title="내가 찜한 목록"
       userUid={userObj.uid}
        />
@@ -77,6 +77,7 @@ useEffect(() => {
 }
 
 const MovieContent = styled.div`
+  
   h3{color:#fff;}
   .content_wishList{
     width: 100%;

@@ -10,16 +10,78 @@
     padding-bottom: 7rem;
   
     .movie__colum-poster{
+      position: relative;
       cursor: pointer;
       transition: transform 0.3s ease 0s;
+      &:hover{
+        z-index: 10;
+        transform: scale(1.1);
+        & .movie_information{
+          visibility: visible;
+        }
+      }
+        .movie__poster{
+          width: 90%;
+          border-radius: 5px;
+        }
+        .movie_information{
+          position: absolute;
+          padding: 10px 20px 0;
+          width: calc(100% - 40px);
+          height: 120px;
+          bottom: -47%;
+          left: 10px;
+          font-size: 30px;
+          background-color: #181818;
+          box-sizing: border-box;
+          visibility: hidden;
+    
+            .movie_icon{
+              display: flex;
+              justify-content: space-between;
+                .movie_active{
+                  display:flex;
+                  justify-content: space-between;
+                  width: 110px;
+                }
+                .info_icon{
+                  font-size: 50px;
+                  opacity: 0.5;
+                  color: #fff;
+                  &:hover{
+                    opacity: 1;
+                    cursor: pointer;
+                  }
+                  &.like{
+                    position: relative;
+                    >strong{
+                      position: absolute;
+                      top: 50%;
+                      left: 50%;
+                      transform: translateX(-50%) translateY(-60%);
+                      font-size: 15px;
+                      color: #fff;
+                      
+                    }
+                  }
+                }
+                .information_more path{
+                  stroke: #fff;
+                }
+            }
+    
+            .icon_checked{
+              opacity: 1 !important;
+            }
+            
+            .movieinfo_genre{
+              font-size: 15px;
+            }
+            
+        }
+
     }
-    .movie__colum-poster:hover{
-      transform: scale(1.5);
-    }
-    .movie__poster{
-      width: 90%;
-      border-radius: 5px;
-    }
+    
   }
 }
 

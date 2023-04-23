@@ -13,6 +13,7 @@
     font-weight: 900;
   }
 
+
   /* swiper */
   .swiper-button-prev, .swiper-button-next{
     color: #fff !important;
@@ -55,12 +56,22 @@
   
   .movie_slide{
     position: relative;
+    left: 0;
     padding: 0 10px;
     box-sizing: border-box;
-    transition: all 400ms linear 0s;
+    transform: scale(1);
+    transition: transform 400ms linear 0s;
+
     &:hover{
       z-index: 10;
       transform: scale(1.5);
+
+      &:first-of-type, &:nth-of-type(6n){
+        left: 100px;
+      }
+      // &:nth-of-type(5n){
+      //   right: 200px;
+      // }
     }
     &:hover>.movie_information{
       visibility: visible;
@@ -84,28 +95,47 @@
       background-color: #181818;
       box-sizing: border-box;
       visibility: hidden;
-      .movie_icon{
-        display: flex;
-        justify-content: space-between;
-          .movie_active{
-            display:flex;
-            justify-content: space-between;
-            width: 110px;
-          }
-          .info_icon{
-            opacity: 0.5;
-            &:hover{
-              opacity: 1;
-              cursor: pointer;
+
+        .movie_icon{
+          display: flex;
+          justify-content: space-between;
+            .movie_active{
+              display:flex;
+              justify-content: space-between;
+              width: 110px;
             }
-          }
-      }
-      .icon_checked{
-        opacity: 1 !important;
-      }
-      .movieinfo_genre{
-        font-size: 15px;
-      }
+            .info_icon{
+              font-size: 40px;
+              opacity: 0.5;
+              &:hover{
+                opacity: 1;
+                cursor: pointer;
+              }
+              &.like{
+                position: relative;
+                >strong{
+                  position: absolute;
+                  top: 50%;
+                  left: 50%;
+                  transform: translateX(-50%) translateY(-60%);
+                  font-size: 15px;
+                  color: #fff;
+                  
+                }
+              }
+            }
+            .information_more path{
+              stroke: #fff;
+            }
+        }
+
+        .icon_checked{
+          opacity: 1 !important;
+        }
+        
+        .movieinfo_genre{
+          font-size: 15px;
+        }
         
     }
 

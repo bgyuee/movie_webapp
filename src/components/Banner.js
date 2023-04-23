@@ -7,10 +7,10 @@ import MovieModal from './MovieModal';
 
 function Banner() {
 
-  const [movie, setMovie] = useState([]);
+  const [movie, setMovie] = useState("");
   const [isClicked, setIsClicked] = useState(false);
   const [ModalOpen, setModalOpen] = useState(false);
-
+  // console.log(movie);
   useEffect(() => { //api가져오는건 항상 useEffect시점이다 //useEffect안에 async사용할수 없어서 함수로 넣어준다
     fetchData();
   }, []);
@@ -59,10 +59,10 @@ function Banner() {
           </h1>
           <div className='banner__buttons'>
             <button className='banner__button play' onClick={() => setIsClicked(true)}>
-              play
+              재생
             </button>
             <button className='banner__button_info info' onClick={() => setModalOpen(true)}>
-              More Information
+              영화 정보
             </button>
           </div>
           <p className='banner__description'>
@@ -70,7 +70,7 @@ function Banner() {
           </p>
         </div>
         <div className='banner__fadeBottom'></div>
-        {ModalOpen&& <MovieModal {...movie} setModalOpen={setModalOpen}/>}
+        {ModalOpen&& <MovieModal {...movie} movievideos={movie} setModalOpen={setModalOpen}/>}
       </header>
     )
     } else{

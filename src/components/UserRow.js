@@ -17,7 +17,7 @@ import { db } from 'fbase';
 
 function UserRow({movies, title, userUid}) {
 
-  const [genres] = movies;
+  // const [genres] = movies;
 
   const [wishList, setWishList] = useState(false);
   const [vidoeplay, setVideoplay] = useState([]);
@@ -100,7 +100,7 @@ function UserRow({movies, title, userUid}) {
   };
 
   return (
-    <section className='row'>
+    <section className='row userRow'>
       <h2>{title}</h2>
       <Swiper
        modules={[Navigation, Pagination, Scrollbar, A11y]}
@@ -159,11 +159,11 @@ function UserRow({movies, title, userUid}) {
                   </div>
                   <span className='information_more info_icon' title='상세정보'>
                     <GrCircleInformation 
-                      onClick={() => handleClick(movie, genres, index)}
+                      onClick={() => handleClick(movie, movie.genres, index)}
                     />
                   </span>
                 </div>
-                <span className='movieinfo_genre'>{genres}</span>
+                <span className='movieinfo_genre'>{movie.genres.name}</span>
               </div>
               </SwiperSlide>
             ))}
@@ -172,7 +172,7 @@ function UserRow({movies, title, userUid}) {
 
       {modalOpen && (
         <MovieModal 
-          movieSelected={movieSelected} //객체를 내보낼때 스프레디연산자를 사용하면 movie안에 있는 개체의 속성들을 다 내보내줄수 있다.
+          {...movieSelected} //객체를 내보낼때 스프레디연산자를 사용하면 movie안에 있는 개체의 속성들을 다 내보내줄수 있다.
           setModalOpen={setModalOpen} 
           selectgenre={selectgenre} 
           movievideos={movies}  

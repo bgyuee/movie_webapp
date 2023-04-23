@@ -74,15 +74,19 @@ function Mypage({userObj}) {
       <MypageTitle>마이페이지</MypageTitle>
       <span className='logout' onClick={onLogOutClick}>로그아웃</span>
       <MypageContent>
-        <div className='profile_image' style={{backgroundImage:`url(${attachment})`}} />
-        <label htmlFor='profileImg_add'>이미지 추가</label>
-        <form className='profie_information' onSubmit={onSubmit}>
-          <input type='text' name='nickname' placeholder={nickname}  
-            onChange={onChange}/>
-          <input id='profileImg_add' className='blind' type='file' accept='image/*'
-            onChange={onFilechange} />
-          <input type='submit' value="수정하기" />
-        </form>
+        <div className='profie_information'>
+          <div className='profileImg'>
+            <div className='profile_image' style={{backgroundImage:`url(${attachment})`}} />
+            <label htmlFor='profileImg_add' className='profileImg_add'>이미지 추가</label>
+          </div>
+          <form className='information_fix' onSubmit={onSubmit}>
+            <input type='text' name='nickname' placeholder={nickname}  
+              onChange={onChange}/>
+            <input id='profileImg_add' className='blind' type='file' accept='image/*'
+              onChange={onFilechange} />
+            <input type='submit' value="수정하기" />
+          </form>
+        </div>
         <Usermovie userObj={userObj}/>
       </MypageContent>
     </MypageContainer>
@@ -116,21 +120,40 @@ const MypageTitle = styled.h2`
 
 const MypageContent = styled.div`
   position: absolute;
-  top: 30%;
+  display: flex;
+  flex-direction: column;
+  top: 0;
   left: 50%;
   transform: translate(-50%);
-  width: 40%;
+  width: 100%;
   text-align: center;
 
-  .profile_image{
-    width: 40px;
-    height: 40px;
-    background-color: red;
-  }
+  
 
   .profie_information{
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    margin-top: 100px !important;
+    margin: 0 auto;
+    width: 380px;
+    margin-bottom: 30px;
+
+    .profileImg{
+      .profile_image{
+      width: 120px;
+      height: 120px;
+      background-position: center center;
+      background-size: cover;
+    }
+      .profileImg_add{
+        color: #fff;
+        cursor: pointer;
+      }
+    }
+      
+      .information_fix{
+      }
+
   }
 `;
 
