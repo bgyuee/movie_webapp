@@ -21,7 +21,7 @@ function Searchpage({userObj}) {
   const [likeList, setLikeList] = useState(false);
   const [likeTotal, setLikeTotal] = useState(0);
   const [vidoeplay, setVideoplay] = useState([]);
-  console.log('selectedMovie ->', selectedMovie);
+  // console.log('selectedMovie ->', selectedMovie);
 
   const useQuery = () => {
     return new URLSearchParams(useLocation().search);
@@ -58,6 +58,7 @@ function Searchpage({userObj}) {
     fetchvidoeMovie(movieId);
     setModalOpen(true);
   };
+  
   const onMouseOver = (index, movieId) => () => {
     isMovieDibbed(userUid, movieId);
     isLikeUser(userUid, movieId);
@@ -71,6 +72,8 @@ function Searchpage({userObj}) {
   };
   
   const onMouseLeave = (index) => () => {
+    console.log(index);
+
     setVideoplay((prevState) => {
       const newState = [...prevState];
       newState[index] = false;
@@ -187,9 +190,9 @@ function Searchpage({userObj}) {
                   {!vidoeplay[index] ? (
                     <img src={movieImageUrl} alt={movie.title} className='movie__poster' />
                   ) : (
-                    movie[index]?.videos?.results?.[0]?.key ? (
+                    selectedMovie?.videos?.results?.[0]?.key ? (
                       <Iframe 
-                      src={`https://www.youtube.com/embed/${movie?.videos?.results?.[0]?.key}?controls=0&autoplay=1&mute=1&playlist=${movie?.videos?.results?.[0]?.key}`}
+                      src={`https://www.youtube.com/embed/${selectedMovie?.videos?.results?.[0]?.key}?controls=0&autoplay=1&mute=1&playlist=${selectedMovie.videos?.results?.[0]?.key}`}
                       />
                     ):(
                       <img src={movieImageUrl} alt={movie.title} className='movie__poster' />
