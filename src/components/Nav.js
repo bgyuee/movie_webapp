@@ -2,6 +2,7 @@ import { authService } from 'fbase';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "styles/Nav.scss";
+import netflex from "../images/NETFLEX.png";
 
 function Nav() {
 
@@ -36,7 +37,7 @@ const onChange = (e) => {
 // onClick={() => {window.location.reload()}} 누룰때마다 새로고침이 되게한다
   return (
     <nav className={`nav ${show && "nav__black"}`}>
-      <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/170px-Netflix_2015_logo.svg.png' alt='Netflix logo' className='nav__logo' 
+      <img src={netflex} alt='Netflex logo' className='nav__logo' 
        onClick={() => {window.location.href = "/movie_webapp/"}} />
 
       <input type='search' placeholder='영화를 검색해주세요' className='nav__input' 

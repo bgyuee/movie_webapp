@@ -6,15 +6,15 @@ function Footer() {
     <FooterContainer>
       <FooterContent>
         <FooterLinkContainer>
-          <FooterLinkTitle>넷플릭스 코리아</FooterLinkTitle>
+          <FooterLinkTitle>넷플렉스 코리아</FooterLinkTitle>
           <FooterLinkContent>
-            <FooterLink href="https://help.netflix.com/ko/node/412">넷플릭스 소개</FooterLink>
+            <FooterLink href="https://help.netflix.com/ko/node/412">넷플렉스 소개</FooterLink>
             <FooterLink href="https://help.netflix.com/ko">고객 센터</FooterLink>
             <FooterLink href="https://help.netflix.com/ko/">미디어 센터</FooterLink>
             <FooterLink href="https://help.netflix.com/ko/">이용 약관</FooterLink>
           </FooterLinkContent>
           <FooterDescContainer>
-            <FooterDescRights>Netflix Rights Reserved.</FooterDescRights>
+            <FooterDescRights>Netflex Rights Reserved.</FooterDescRights>
           </FooterDescContainer>
         </FooterLinkContainer>
       </FooterContent>

@@ -68,8 +68,11 @@
           line-height: 1.5;
         }
         .modal__movies{
-          display: flex;
-          flex-direction: column;
+          margin-top: 20px;
+          iframe{
+            margin-bottom: 10px;
+          }
+          
         }
         }
 

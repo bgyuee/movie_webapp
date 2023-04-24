@@ -21,7 +21,7 @@ function Searchpage({userObj}) {
   const [likeList, setLikeList] = useState(false);
   const [likeTotal, setLikeTotal] = useState(0);
   const [vidoeplay, setVideoplay] = useState([]);
-  // console.log('selectedMovie ->', selectedMovie);
+  console.log('selectedMovie ->', selectedMovie);
 
   const useQuery = () => {
     return new URLSearchParams(useLocation().search);
@@ -60,9 +60,11 @@ function Searchpage({userObj}) {
   };
   
   const onMouseOver = (index, movieId) => () => {
+    console.log(index);
     isMovieDibbed(userUid, movieId);
     isLikeUser(userUid, movieId);
     fetchvidoeMovie(movieId);
+    getLikesCount(movieId);
 
     setVideoplay((prevState) => {
       const newState = [...prevState];
@@ -72,8 +74,6 @@ function Searchpage({userObj}) {
   };
   
   const onMouseLeave = (index) => () => {
-    console.log(index);
-
     setVideoplay((prevState) => {
       const newState = [...prevState];
       newState[index] = false;
@@ -133,7 +133,7 @@ function Searchpage({userObj}) {
       await deleteLike(userUid, movieId);
     }else {
       try {
-        const docRef = await addDoc(collection(db, `Likes/${movieId}/${userUid}`), {
+        const docRef = await addDoc(collection(db, `Likes/${movieId}/userUid`), {
           userid: userUid
         });
         setLikeList(true);
@@ -143,14 +143,21 @@ function Searchpage({userObj}) {
     }
   }
 
+  // movieId에 해당하는 문서 수를 가져오는 함수
+  const getLikesCount = async (movieId) => {
+    const likesRef = collection(db, `Likes/${movieId}/userUid`);
+    const querySnapshot = await getDocs(likesRef);
+
+    setLikeTotal(querySnapshot.size);
+  }
+
   // movie에 해당 유저가 있는지 확인
   const isLikeUser = async (userUid, movieId) => {
-    const movieRef = collection(db, `Likes/${movieId}/${userUid}`);
+    const movieRef = collection(db, `Likes/${movieId}/userUid`);
     const q = query(movieRef, where(`userid`, `==`, `${userUid}`));
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) {
       setLikeList(true);
-      setLikeTotal(querySnapshot.size);
     } else {
       setLikeList(false);
       setLikeTotal(0);
@@ -160,13 +167,13 @@ function Searchpage({userObj}) {
   };
   // Like삭제
   const deleteLike = async (userUid, movieId) => {
-    const movieRef = collection(db, `Likes/${movieId}/${userUid}`);
+    const movieRef = collection(db, `Likes/${movieId}/userUid`);
     const q = query(movieRef, where(`userid`, `==`, `${userUid}`));
     const querySnapshot = await getDocs(q);
 
     if(!querySnapshot.empty) {
       querySnapshot.forEach(user => {
-        deleteDoc(doc(db, `Likes/${movieId}/${userUid}`, user.id));
+        deleteDoc(doc(db, `Likes/${movieId}/userUid`, user.id));
         setLikeList(false);
       });
     }
@@ -179,19 +186,17 @@ function Searchpage({userObj}) {
       <section className='search-container'>
         {searchResults.map((movie, index) => {
           if(movie.backdrop_path !== null && movie.media_type !== "person"){
-
             const movieImageUrl ="https://image.tmdb.org/t/p/w500/" + movie.backdrop_path;
-
             return(
-
               <div className='movie' key={movie.id} 
               onMouseOver={onMouseOver(index, movie.id)} onMouseLeave={onMouseLeave(index)} >
                 <div className='movie__colum-poster'>
+                  {/* <img src={movieImageUrl} alt={movie.title} className='movie__poster' /> */}
                   {!vidoeplay[index] ? (
                     <img src={movieImageUrl} alt={movie.title} className='movie__poster' />
                   ) : (
                     selectedMovie?.videos?.results?.[0]?.key ? (
-                      <Iframe 
+                      <Iframe
                       src={`https://www.youtube.com/embed/${selectedMovie?.videos?.results?.[0]?.key}?controls=0&autoplay=1&mute=1&playlist=${selectedMovie.videos?.results?.[0]?.key}`}
                       />
                     ):(
@@ -211,7 +216,8 @@ function Searchpage({userObj}) {
                       />
                     </span>
                   </div>
-                  <span className='movieinfo_genre'>{movie.genres}</span>
+                  <span className='movie_title'>{selectedMovie.title ? selectedMovie.title : selectedMovie.name}</span>
+                  <span className='movieinfo_genre'>{selectedMovie.genres?.map(genre => (genre.name))}</span>
                 </div>
                 </div>
               </div>

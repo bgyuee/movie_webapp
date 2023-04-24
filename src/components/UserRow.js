@@ -12,12 +12,10 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import styled from 'styled-components';
-import { addDoc, collection, deleteDoc, doc, getDocs, query, where } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 import { db } from 'fbase';
 
 function UserRow({movies, title, userUid}) {
-
-  // const [genres] = movies;
 
   const [wishList, setWishList] = useState(false);
   const [vidoeplay, setVideoplay] = useState([]);
@@ -25,6 +23,36 @@ function UserRow({movies, title, userUid}) {
   const [selectgenre, setSelectgenre] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [movieindex, setMovieindex] = useState("");
+  const [likeList, setLikeList] = useState(false);
+  const [likeTotal, setLikeTotal] = useState(0);
+
+  const handleClick = (movie, genre, index) => {
+    setMovieSelected(movie);
+    setSelectgenre(genre);
+    setMovieindex(index);
+    setModalOpen(true);
+  }
+  
+    const onMouseOver = (index, movieId) => () => {
+      isMovieDibbed(userUid, movieId);
+      isLikeUser(userUid, movieId);
+      getLikesCount(movieId);
+  
+      setVideoplay((prevState) => {
+        const newState = [...prevState];
+        newState[index] = true;
+        return newState;
+      });
+    };
+    
+    const onMouseLeave = (index) => () => {
+      setLikeTotal(0);
+      setVideoplay((prevState) => {
+        const newState = [...prevState];
+        newState[index] = false;
+        return newState;
+      });
+    };
 
   /*---------------------------------------------- 찜하기 -------------------------------------------------------*/
   // 해당 무비상세정보를 클릭했을때 토글처럼 추가 or 삭제기능
@@ -72,32 +100,59 @@ function UserRow({movies, title, userUid}) {
     }
   }
  /*---------------------------------------------- //찜하기 -------------------------------------------------------*/
+/*------------------------------------------------좋아요------------------------------------------------------------*/
+const Like = async (userUid, movieId) => {
+  const isLiked = await isLikeUser(userUid, movieId);
 
+  if(isLiked) {
+    await deleteLike(userUid, movieId);
+  }else {
+    try {
+      const docRef = await addDoc(collection(db, `Likes/${movieId}/userUid`), {
+        userid: userUid
+      });
+      setLikeList(true);
+    } catch(e) {
+      console.error(e);
+    }
+  }
+};
+// movieId에 해당하는 문서 수를 가져오는 함수
+const getLikesCount = async (movieId) => {
+  const likesRef = collection(db, `Likes/${movieId}/userUid`);
+  const querySnapshot = await getDocs(likesRef);
 
- const handleClick = (movie, genre, index) => {
-  setMovieSelected(movie);
-  setSelectgenre(genre);
-  setMovieindex(index);
-  setModalOpen(true);
+  setLikeTotal(querySnapshot.size);
 }
 
-  const onMouseOver = (index, moiveId) => () => {
-    isMovieDibbed(userUid, moiveId);
+// movie에 해당 유저가 있는지 확인
+const isLikeUser = async (userUid, movieId) => {
+  const movieRef = collection(db, `Likes/${movieId}/userUid`);
+  const q = query(movieRef, where(`userid`, `==`, `${userUid}`));
+  const querySnapshot = await getDocs(q);
+  if(!querySnapshot.empty) {
+    setLikeList(true);
+  } else{
+    setLikeList(false);
+    setLikeTotal(0);
+  }
 
-    setVideoplay((prevState) => {
-      const newState = [...prevState];
-      newState[index] = true;
-      return newState;
-    });
-  };
-  
-  const onMouseLeave = (index) => () => {
-    setVideoplay((prevState) => {
-      const newState = [...prevState];
-      newState[index] = false;
-      return newState;
-    });
-  };
+  return !querySnapshot.empty;
+}
+// Like삭제
+const deleteLike = async (userUid, movieId) => {
+  const movieRef = collection(db, `Likes/${movieId}/userUid`);
+  const q = query(movieRef, where(`userid`, `==`, `${userUid}`));
+  const querySnapshot = await getDocs(q);
+
+  if(!querySnapshot.empty) {
+    querySnapshot.forEach(user => {
+      deleteDoc(doc(db, `Likes/${movieId}/userUid`, user.id));
+      setLikeList(false);
+    })
+  }
+}
+/*--------------------------------------------------//좋아요----------------------------------------------------------*/
 
   return (
     <section className='row userRow'>
@@ -155,7 +210,7 @@ function UserRow({movies, title, userUid}) {
                   <div className='movie_active'>
                     <span className='trailer_play info_icon' title='영화재생'><FaPlay /></span>
                     <span className={`WishList info_icon ${wishList && "icon_checked"}`} title='찜하기' onClick={() => Dib(userUid, movie.id)}><FaPlus /></span>
-                    <span className='like info_icon' title='좋아요'><FcLike /></span>
+                    <span className='like info_icon' title='좋아요' onClick={() => Like(userUid, movie.id)}><FcLike /><strong>+{likeTotal}</strong></span>
                   </div>
                   <span className='information_more info_icon' title='상세정보'>
                     <GrCircleInformation 
@@ -163,7 +218,7 @@ function UserRow({movies, title, userUid}) {
                     />
                   </span>
                 </div>
-                <span className='movieinfo_genre'>{movie.genres.name}</span>
+                <span className='movie_title'>{movie.title ? movie.title :movie.name}</span>
               </div>
               </SwiperSlide>
             ))}

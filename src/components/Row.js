@@ -86,9 +86,10 @@ function Row({title, id, fetchUrl, userUid, istv}) {
     setModalOpen(true);
   }
 
-  const onMouseOver = (index, moiveId) => () => {
-    isMovieDibbed(userUid, moiveId);
-    isLikeUser(userUid, moiveId);
+  const onMouseOver = (index, movieId) => () => {
+    isMovieDibbed(userUid, movieId);
+    isLikeUser(userUid, movieId);
+    getLikesCount(movieId);
 
     setVideoplay((prevState) => {
       const newState = [...prevState];
@@ -98,6 +99,7 @@ function Row({title, id, fetchUrl, userUid, istv}) {
   };
   
   const onMouseLeave = (index) => () => {
+    setLikeTotal(0);
     setVideoplay((prevState) => {
       const newState = [...prevState];
       newState[index] = false;
@@ -157,7 +159,7 @@ function Row({title, id, fetchUrl, userUid, istv}) {
       await deleteLike(userUid, movieId);
     }else {
       try {
-        const docRef = await addDoc(collection(db, `Likes/${movieId}/${userUid}`), {
+        const docRef = await addDoc(collection(db, `Likes/${movieId}/userUid`), {
           userid: userUid
         });
         setLikeList(true);
@@ -166,15 +168,21 @@ function Row({title, id, fetchUrl, userUid, istv}) {
       }
     }
   }
+  // movieId에 해당하는 문서 수를 가져오는 함수
+  const getLikesCount = async (movieId) => {
+    const likesRef = collection(db, `Likes/${movieId}/userUid`);
+    const querySnapshot = await getDocs(likesRef);
+    
+    setLikeTotal(querySnapshot.size);
+};
 
   // movie에 해당 유저가 있는지 확인
   const isLikeUser = async (userUid, movieId) => {
-    const movieRef = collection(db, `Likes/${movieId}/${userUid}`);
+    const movieRef = collection(db, `Likes/${movieId}/userUid`);
     const q = query(movieRef, where(`userid`, `==`, `${userUid}`));
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) {
       setLikeList(true);
-      setLikeTotal(querySnapshot.size);
     } else {
       setLikeList(false);
       setLikeTotal(0);
@@ -184,21 +192,17 @@ function Row({title, id, fetchUrl, userUid, istv}) {
   };
   // Like삭제
   const deleteLike = async (userUid, movieId) => {
-    const movieRef = collection(db, `Likes/${movieId}/${userUid}`);
+    const movieRef = collection(db, `Likes/${movieId}/userUid`);
     const q = query(movieRef, where(`userid`, `==`, `${userUid}`));
     const querySnapshot = await getDocs(q);
 
     if(!querySnapshot.empty) {
       querySnapshot.forEach(user => {
-        deleteDoc(doc(db, `Likes/${movieId}/${userUid}`, user.id));
+        deleteDoc(doc(db, `Likes/${movieId}/userUid`, user.id));
         setLikeList(false);
       });
     }
   }
-
-
-
-
 
  /*-----------------------------------------------//좋아요 -------------------------------------------------------*/
 
@@ -289,6 +293,7 @@ function Row({title, id, fetchUrl, userUid, istv}) {
                     />
                   </span>
                 </div>
+                <span className='movie_title'>{movie.title ? movie.title :movie.name}</span>
                 <span className='movieinfo_genre'>{rowgenres[index]}</span>
               </div>
               </SwiperSlide>
