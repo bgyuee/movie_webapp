@@ -5,12 +5,11 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import UserRow from './UserRow';
 
-
-function Usermovie({userObj}) {
-  const {uid} = userObj
+function Usermovie({userObj, modalOpen, setModalOpen}) {
+  
+  const {uid} = userObj;
   const [userwishList, setUserwishList] = useState("");
   const [wishListmovie, setWishListmovie] = useState([]);
-  console.log('wishListmovie ->', wishListmovie);
 
     /* --------------------------------------------------------영화불러오기----------------------------------------------------------------------- */
   // 찜목록
@@ -32,7 +31,6 @@ function Usermovie({userObj}) {
 // 해당 영화 불러오기
 const fetchVideos = async () => {
   try {
-    console.log("userwishList:", userwishList);
     const movieListPromises = userwishList.map(async (movie) => {
         try {
           return await axios.get(`/movie/${movie}`, {
@@ -71,13 +69,16 @@ useEffect(() => {
       movies={wishListmovie}
       title="내가 찜한 목록"
       userUid={userObj.uid}
+      modalOpen={modalOpen} 
+      setModalOpen={setModalOpen}
        />
     </MovieContent>
   )
 }
 
 const MovieContent = styled.div`
-  
+  position: relative;
+  z-index: 1200;
   h3{color:#fff;}
   .content_wishList{
     width: 100%;

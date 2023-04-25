@@ -293,8 +293,14 @@ function Row({title, id, fetchUrl, userUid, istv}) {
                     />
                   </span>
                 </div>
-                <span className='movie_title'>{movie.title ? movie.title :movie.name}</span>
-                <span className='movieinfo_genre'>{rowgenres[index]}</span>
+                <div className='movie_info'>
+                  <span className='movie_title'>{movie.title ? movie.title :movie.name}</span>
+                  <p className='movieinfo_genre'>
+                   {rowgenres[index]?.map(genre => (
+                    <span>{genre} </span>
+                  ))}
+                  </p>
+                </div>
               </div>
               </SwiperSlide>
             ))}

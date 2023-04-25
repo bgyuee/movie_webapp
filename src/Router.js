@@ -1,4 +1,3 @@
-import React from 'react';
 import { Outlet, Route, Routes } from "react-router-dom";
 import Nav from "components/Nav";
 import Footer from "components/Footer";
@@ -12,7 +11,7 @@ function AppRouter({isLoggedIn, userObj}) {
   const Layout = () => { //함수형 컴포넌트로 선언해준다
     return(
       <div>
-        <Nav />
+        <Nav userObj={userObj}/>
         <Outlet /> {/* 리액트돔안에 Outlet이라는 함수가 있다 /이자리에 (메인,디테일 서치,)즉, 자식요소의 경로를 랜더링할수 있다 Layout이 자식라우트들을 감싸고 부모요소들중 oulet요소를 넣으면 그자리에 레이아웃으로 감싼 자식요소들을 넣을수있다 */} 
         <Footer />
       </div>

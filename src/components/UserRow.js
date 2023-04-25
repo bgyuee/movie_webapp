@@ -15,20 +15,19 @@ import styled from 'styled-components';
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 import { db } from 'fbase';
 
-function UserRow({movies, title, userUid}) {
+function UserRow({movies, title, userUid, modalOpen, setModalOpen}) {
 
   const [wishList, setWishList] = useState(false);
   const [vidoeplay, setVideoplay] = useState([]);
   const [movieSelected, setMovieSelected] = useState("");
   const [selectgenre, setSelectgenre] = useState("");
-  const [modalOpen, setModalOpen] = useState(false);
   const [movieindex, setMovieindex] = useState("");
   const [likeList, setLikeList] = useState(false);
   const [likeTotal, setLikeTotal] = useState(0);
 
   const handleClick = (movie, genre, index) => {
     setMovieSelected(movie);
-    setSelectgenre(genre);
+    setSelectgenre(genre?.map(item => (item.name)));
     setMovieindex(index);
     setModalOpen(true);
   }
@@ -156,7 +155,7 @@ const deleteLike = async (userUid, movieId) => {
 
   return (
     <section className='row userRow'>
-      <h2>{title}</h2>
+      <h2 className='user_title'>{title}</h2>
       <Swiper
        modules={[Navigation, Pagination, Scrollbar, A11y]}
        navigation // arrow 버튼 사용 유무
@@ -218,7 +217,14 @@ const deleteLike = async (userUid, movieId) => {
                     />
                   </span>
                 </div>
-                <span className='movie_title'>{movie.title ? movie.title :movie.name}</span>
+                <div className='movie_info'>
+                  <span className='movie_title'>{movie.title ? movie.title :movie.name}</span>
+                  <p className='movieinfo_genre'>
+                  {movie.genres.map(genre => (
+                    <span>{genre.name} </span>
+                  ))}
+                  </p>
+                </div>
               </div>
               </SwiperSlide>
             ))}

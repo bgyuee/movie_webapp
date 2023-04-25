@@ -21,7 +21,6 @@ function Searchpage({userObj}) {
   const [likeList, setLikeList] = useState(false);
   const [likeTotal, setLikeTotal] = useState(0);
   const [vidoeplay, setVideoplay] = useState([]);
-  console.log('selectedMovie ->', selectedMovie);
 
   const useQuery = () => {
     return new URLSearchParams(useLocation().search);
@@ -60,7 +59,6 @@ function Searchpage({userObj}) {
   };
   
   const onMouseOver = (index, movieId) => () => {
-    console.log(index);
     isMovieDibbed(userUid, movieId);
     isLikeUser(userUid, movieId);
     fetchvidoeMovie(movieId);
@@ -191,8 +189,8 @@ function Searchpage({userObj}) {
               <div className='movie' key={movie.id} 
               onMouseOver={onMouseOver(index, movie.id)} onMouseLeave={onMouseLeave(index)} >
                 <div className='movie__colum-poster'>
-                  {/* <img src={movieImageUrl} alt={movie.title} className='movie__poster' /> */}
-                  {!vidoeplay[index] ? (
+                  <img src={movieImageUrl} alt={movie.title} className='movie__poster' />
+                  {/* {!vidoeplay[index] ? (
                     <img src={movieImageUrl} alt={movie.title} className='movie__poster' />
                   ) : (
                     selectedMovie?.videos?.results?.[0]?.key ? (
@@ -202,7 +200,7 @@ function Searchpage({userObj}) {
                     ):(
                       <img src={movieImageUrl} alt={movie.title} className='movie__poster' />
                     )
-                  )}
+                  )} */}
                   <div className='movie_information'>
                     <div className='movie_icon'>
                     <div className='movie_active'>
@@ -216,8 +214,12 @@ function Searchpage({userObj}) {
                       />
                     </span>
                   </div>
-                  <span className='movie_title'>{selectedMovie.title ? selectedMovie.title : selectedMovie.name}</span>
-                  <span className='movieinfo_genre'>{selectedMovie.genres?.map(genre => (genre.name))}</span>
+                  <div className='movie_info'>
+                    <span className='movie_title'>{selectedMovie.title ? selectedMovie.title : selectedMovie.name}</span>
+                    <p className='movieinfo_genre'>
+                     <span>{selectedMovie.genres?.map(genre => (genre.name))}</span>
+                    </p>
+                  </div>
                 </div>
                 </div>
               </div>

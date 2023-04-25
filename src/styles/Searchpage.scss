@@ -70,6 +70,21 @@
                 .information_more path{
                   stroke: #fff;
                 }
+                
+            }
+            .movie_info{
+              display: flex;
+              flex-direction: column;
+    
+                .movie_title{
+                  font-size: 18px;
+                  margin-bottom: 2px;
+                  color: #fff;
+                }
+                .movieinfo_genre{
+                  font-size: 10px;
+                  color: #fff;
+                }
             }
     
             .icon_checked{
