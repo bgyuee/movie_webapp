@@ -7,14 +7,15 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-function Mypage({userObj}) {
-  console.log(userObj);
+function Mypage({userObj, attachment, setAttachment}) {
+  // console.log(userObj);
+  
   const {displayName, photoURL, uid} = userObj;
-
-  const [modalOpen, setModalOpen] = useState(false);
   const [nickname, setNickname] = useState(displayName);
-  const [attachment, setAttachment] = useState(photoURL);
+  const [modalOpen, setModalOpen] = useState(false);
   const [show, setShow] = useState(false);
+  const [porfileImgfix, setProfileImgfix] = useState(false);
+  console.log(porfileImgfix);
 
   const navigate = useNavigate();
 
@@ -54,7 +55,6 @@ function Mypage({userObj}) {
     reader.onloadend = (finisheEvent) => {
       // console.log('finisheEvent ->', finisheEvent);
       const {currentTarget:{result}} = finisheEvent;
-
       setAttachment(result);
     }
     reader.readAsDataURL(theFile);
@@ -75,6 +75,7 @@ function Mypage({userObj}) {
   
   const Imgadd = async () => {
     try {
+      setProfileImgfix(false);
       let attachmentUrl ="";
       if(attachment !== photoURL) {
         const storageRef = ref(storage, `profileImg/${uid}`);
@@ -111,16 +112,19 @@ function Mypage({userObj}) {
         <div className='profie_information'>
           <div className='profileImg'>
             <div className='profile_image' style={attachment ? {backgroundImage:`url(${attachment})`} : {backgroundImage:`url('https://occ-0-4796-988.1.nflxso.net/dnm/api/v6/K6hjPJd6cR6FpVELC5Pd6ovHRSk/AAAABbme8JMz4rEKFJhtzpOKWFJ_6qX-0y5wwWyYvBhWS0VKFLa289dZ5zvRBggmFVWVPL2AAYE8xevD4jjLZjWumNo.png?r=a41')`}} />
-            <button className='profileImg_fix' onClick={(prev) => !prev}>이미지수정하기</button>
-            <div>
-              <label htmlFor='profileImg_add' className='profileImg_add'>이미지 넣기</label>
-              <button onClick={Imgadd}>이미지 수정완료</button>
-              <button htmlFor='profileImg_del' className='profileImg_del' onClick={Imgdel}>이미지 삭제</button>
-            </div>
+            {!porfileImgfix ? (
+              <button className='profileImg_fix' onClick={() => setProfileImgfix(prev => !prev)}>이미지수정하기</button>
+            ) : (
+                <div>
+                  <label htmlFor='profileImg_add' className='profileImg_add'>이미지 넣기</label>
+                  <button onClick={Imgadd}>이미지 수정완료</button>
+                  <button htmlFor='profileImg_del' className='profileImg_del' onClick={Imgdel}>이미지 삭제</button>
+                </div>
+            )}
           </div>
           <form className='information_fix' onSubmit={onSubmit}>
-            <p>{displayName}</p>
-            <input type='text' name='nickname' placeholder={nickname}
+            <p className='nickname'>{displayName}</p>
+            <input className='nicknamefix' type='text' name='nickname' placeholder={nickname}
               onChange={onChange} />
             <input id='profileImg_add' className='blind' type='file' accept='image/*'
               onChange={onFilechange} />
@@ -197,6 +201,9 @@ const MypageContent = styled.div`
     }
       
       .information_fix{
+        .nickname{
+          color: #fff;
+        }
       }
 
   }

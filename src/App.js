@@ -26,7 +26,10 @@ function App() {
     <>
     {init ? (
       <div className="app">
-       <AppRouter isLoggedIn={isLoggedIn} userObj={userObj} />
+       <AppRouter 
+        isLoggedIn={isLoggedIn} 
+        userObj={userObj} 
+        />
      </div>
     ):(
       "로딩중..."
