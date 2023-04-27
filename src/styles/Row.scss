@@ -8,6 +8,8 @@
   &:hover .swiper-button-prev{opacity: 1;}
   &:hover .swiper-button-next{opacity: 1;}
   h2{
+    display: flex;
+    justify-content: center;
     padding-left: 20px;
     font-size: 30px;
     font-weight: 900;

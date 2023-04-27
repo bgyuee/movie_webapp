@@ -4,4 +4,7 @@
   width: 100%;
   overflow-x: hidden;
   background-color: #111;
+  &.hidden{
+    overflow-y: hidden;
+  }
 }

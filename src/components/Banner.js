@@ -61,7 +61,7 @@ function Banner() {
             <button className='banner__button play' onClick={() => setIsClicked(true)}>
               재생
             </button>
-            <button className='banner__button_info info' onClick={() => setModalOpen(true)}>
+            <button className='banner__button info' onClick={() => setModalOpen(true)}>
               영화 정보
             </button>
           </div>

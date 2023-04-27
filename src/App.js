@@ -8,7 +8,17 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(authService.currentUser);
   const [userObj, setUserObj] = useState(null);
   const [init, setInit] = useState(false);
+
+  const displayName = userObj ? userObj.displayName : null;
+  const [username, setUsername] = useState(displayName);
+
+  const photoURL = userObj? userObj.photoURL : null;
+  const [userprofileImg, setUserprofileImg] = useState(photoURL);
+  // console.log(userprofileImg);
   // console.log(userObj);
+
+  const [appHeight, setAppHeight] = useState(false);
+  
 
   useEffect(() => {
     onAuthStateChanged(authService, (user) => {
@@ -20,7 +30,7 @@ function App() {
       }
       setInit(true);
     });
-  }, []);
+  }, [userprofileImg, username]);
 
   return (
     <>
@@ -29,6 +39,9 @@ function App() {
        <AppRouter 
         isLoggedIn={isLoggedIn} 
         userObj={userObj} 
+        userprofileImg={userprofileImg}
+        setUserprofileImg={setUserprofileImg}
+        setUsername={setUsername}
         />
      </div>
     ):(

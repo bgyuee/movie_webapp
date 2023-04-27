@@ -11,6 +11,17 @@ function Usermovie({userObj, modalOpen, setModalOpen}) {
   const [userwishList, setUserwishList] = useState("");
   const [wishListmovie, setWishListmovie] = useState([]);
 
+  // 찜 목록이 변경되었을때 실행
+  const onWishListChange = () => {
+    isMovieDibbed();
+  }
+
+  useEffect(() => {
+    if (userwishList.length > 0) {
+      fetchVideos();
+    }
+  }, [userwishList]);
+
     /* --------------------------------------------------------영화불러오기----------------------------------------------------------------------- */
   // 찜목록
   useEffect(() => {
@@ -54,12 +65,6 @@ const fetchVideos = async () => {
   }
 };
 
-
-useEffect(() => {
-  if (userwishList.length > 0) {
-    fetchVideos();
-  }
-}, [userwishList]);
   
   /* ---------------------------------------------------------//영화불러오기----------------------------------------------------------------------- */
 
@@ -71,6 +76,7 @@ useEffect(() => {
       userUid={userObj.uid}
       modalOpen={modalOpen} 
       setModalOpen={setModalOpen}
+      onWishListChange={onWishListChange}
        />
     </MovieContent>
   )

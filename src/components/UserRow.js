@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'api/axios';
 import MovieModal from 'components/MovieModal';
 import "styles/Row.scss";
@@ -15,7 +15,15 @@ import styled from 'styled-components';
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 import { db } from 'fbase';
 
-function UserRow({movies, title, userUid, modalOpen, setModalOpen}) {
+function UserRow({
+  movies, 
+  title, 
+  userUid, 
+  modalOpen, 
+  setModalOpen,
+  onWishListChange
+}) {
+  // console.log(movies);
 
   const [wishList, setWishList] = useState(false);
   const [vidoeplay, setVideoplay] = useState([]);
@@ -73,6 +81,7 @@ function UserRow({movies, title, userUid, modalOpen, setModalOpen}) {
   }
 
   // 해당 movieId가 있는지 확인
+
   const isMovieDibbed = async (userUid, movieId) => {
     const movieRef = collection(db, `Dibs/${userUid}/movies`);
     const q = query(movieRef, where(`movies`, `==`, movieId));
@@ -97,7 +106,8 @@ function UserRow({movies, title, userUid, modalOpen, setModalOpen}) {
     }else {
       console.log('삭제할 영화가 없습니다.');
     }
-  }
+    onWishListChange();
+  };
  /*---------------------------------------------- //찜하기 -------------------------------------------------------*/
 /*------------------------------------------------좋아요------------------------------------------------------------*/
 const Like = async (userUid, movieId) => {
@@ -209,7 +219,7 @@ const deleteLike = async (userUid, movieId) => {
                   <div className='movie_active'>
                     <span className='trailer_play info_icon' title='영화재생'><FaPlay /></span>
                     <span className={`WishList info_icon ${wishList && "icon_checked"}`} title='찜하기' onClick={() => Dib(userUid, movie.id)}><FaPlus /></span>
-                    <span className='like info_icon' title='좋아요' onClick={() => Like(userUid, movie.id)}><FcLike /><strong>+{likeTotal}</strong></span>
+                    <span className={`like info_icon  ${likeList && "icon_checked"}`} title='좋아요' onClick={() => Like(userUid, movie.id)}><FcLike /><strong>+{likeTotal}</strong></span>
                   </div>
                   <span className='information_more info_icon' title='상세정보'>
                     <GrCircleInformation 
@@ -250,4 +260,4 @@ const Iframe = styled.iframe`
   border: none;
 `
 
-export default UserRow
+export default UserRow;

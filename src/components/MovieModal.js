@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 function MovieModal({
   setModalOpen, backdrop_path, overview, release_date, movieindex, movievideos,
-  first_air_date, title, name, vote_average, id, selectgenre }) 
+  first_air_date, title, name, vote_average, id, selectgenre, setAppHeight }) 
 {
   
   const ref = useRef();// 돔을 직접조작하기위해 useRef를 사용한다 id처럼 사용한다

@@ -5,17 +5,19 @@ import { collection, doc, getDocs } from 'firebase/firestore';
 import { deleteObject, getDownloadURL, ref, uploadString } from 'firebase/storage';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FaPen, FaImage ,FaCheck } from "react-icons/fa";
+import { AiFillDelete } from "react-icons/ai";
 import styled from 'styled-components';
 
-function Mypage({userObj, attachment, setAttachment}) {
+function Mypage({userObj, setUserprofileImg, setUsername}) {
   // console.log(userObj);
   
+  const [attachment, setAttachment] = useState(userObj.photoURL);
   const {displayName, photoURL, uid} = userObj;
   const [nickname, setNickname] = useState(displayName);
   const [modalOpen, setModalOpen] = useState(false);
   const [show, setShow] = useState(false);
   const [porfileImgfix, setProfileImgfix] = useState(false);
-  console.log(porfileImgfix);
 
   const navigate = useNavigate();
 
@@ -67,6 +69,7 @@ function Mypage({userObj, attachment, setAttachment}) {
       await updateProfile(userObj, {
         displayName: nickname
       });
+      setUsername(nickname);
 
     } catch(e) {
       console.log(e);
@@ -85,6 +88,7 @@ function Mypage({userObj, attachment, setAttachment}) {
       await updateProfile(userObj, {
         photoURL: attachmentUrl || photoURL
       })
+      setUserprofileImg(attachmentUrl);
     }catch(e) {
       console.error(e);
     }
@@ -113,12 +117,12 @@ function Mypage({userObj, attachment, setAttachment}) {
           <div className='profileImg'>
             <div className='profile_image' style={attachment ? {backgroundImage:`url(${attachment})`} : {backgroundImage:`url('https://occ-0-4796-988.1.nflxso.net/dnm/api/v6/K6hjPJd6cR6FpVELC5Pd6ovHRSk/AAAABbme8JMz4rEKFJhtzpOKWFJ_6qX-0y5wwWyYvBhWS0VKFLa289dZ5zvRBggmFVWVPL2AAYE8xevD4jjLZjWumNo.png?r=a41')`}} />
             {!porfileImgfix ? (
-              <button className='profileImg_fix' onClick={() => setProfileImgfix(prev => !prev)}>이미지수정하기</button>
+              <span className='profileImg_fix fix_icon' title='수정하기' onClick={() => setProfileImgfix(prev => !prev)}><FaPen /></span>
             ) : (
-                <div>
-                  <label htmlFor='profileImg_add' className='profileImg_add'>이미지 넣기</label>
-                  <button onClick={Imgadd}>이미지 수정완료</button>
-                  <button htmlFor='profileImg_del' className='profileImg_del' onClick={Imgdel}>이미지 삭제</button>
+                <div className='profileImg_option'>
+                  <label htmlFor='profileImg_add' className='profileImg_add fix_icon' title='이미지첨부'><FaImage /></label>
+                  <span className='fix_icon' onClick={Imgadd} title='수정하기'><FaCheck /></span>
+                  {photoURL !== "" && <label htmlFor='profileImg_del' className='profileImg_del fix_icon' onClick={Imgdel} title='삭제하기'><AiFillDelete /></label>}
                 </div>
             )}
           </div>
@@ -128,7 +132,7 @@ function Mypage({userObj, attachment, setAttachment}) {
               onChange={onChange} />
             <input id='profileImg_add' className='blind' type='file' accept='image/*'
               onChange={onFilechange} />
-            <input type='submit' value="수정하기" />
+            <input className='nicknameSubmit' type='submit' value="확인" />
           </form>
         </div>
         <Usermovie userObj={userObj} modalOpen={modalOpen} setModalOpen={setModalOpen} />
@@ -184,25 +188,63 @@ const MypageContent = styled.div`
     justify-content: space-between;
     margin-top: 100px !important;
     margin: 0 auto;
-    width: 380px;
+    width: 320px;
     margin-bottom: 30px;
 
     .profileImg{
+      position: relative;
       .profile_image{
       width: 120px;
       height: 120px;
       background-position: center center;
       background-size: cover;
     }
-      .profileImg_add{
-        color: #fff;
-        cursor: pointer;
+      .fix_icon {
+          color: #fff;
+          opacity: 0.9;
+          cursor: pointer;
+          &:hover{opacity: 1;transform: scale(1.2)}
+            &.profileImg_fix{
+              position: absolute;
+              bottom: -5px;
+              right: -5px;
+              font-size: 20px;
+              color: #FFA500;
+            }
+          }
+      .profileImg_option{
+        display: flex;
+        justify-content: space-between;
       }
+      
     }
       
       .information_fix{
+        position: relative;
         .nickname{
+          margin-bottom: 5px;
+          font-size: 20px;
           color: #fff;
+        }
+        .nicknamefix{
+          padding-top: 8px;
+          padding-left: 10px;
+          height: 20px;
+          border-radius: 6px;
+          border: none;
+          box-sizing: border-box;
+          &::placeholder{font-size:20px;line-height: 25px;}
+          &:focus{outline: none;}
+        }
+        .nicknameSubmit{
+          position: absolute;
+          top: 29%;
+          right: 0;
+          font-size: 14px;
+          background: #FFA500;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
         }
       }
 

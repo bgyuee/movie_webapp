@@ -7,9 +7,13 @@ import Auth from 'routes/Auth';
 import Mypage from 'routes/Mypage';
 import { useState } from "react";
 
-function AppRouter({isLoggedIn, userObj}) {
-
-  const [attachment, setAttachment] = useState(userObj.photoURL);
+function AppRouter({
+  isLoggedIn,
+   userObj, 
+   userprofileImg, 
+   setUserprofileImg, 
+   setUsername
+  }) {
 
   const Layout = () => { //함수형 컴포넌트로 선언해준다
     return(
@@ -28,11 +32,7 @@ function AppRouter({isLoggedIn, userObj}) {
           <Route path="/" element={<Layout />}>
             <Route index path="" element={<Mainpage {...userObj} />} /> {/* index => localhost:3000/ 즉 path ="/"이거랑 같다 부모의 주소를 그대로 가져온다 */}
             <Route path="search" element={<Searchpage userObj={userObj} />} />  {/* localhost:3000/search  부모주소기준/search */}
-            <Route path='mypage' 
-              element={<Mypage userObj={userObj} 
-                               attachment={attachment}
-                               setAttachment={setAttachment}
-                        />} />
+            <Route path='mypage' element={<Mypage userObj={userObj} setUserprofileImg={setUserprofileImg} setUsername={setUsername} />} />
           </Route>
           ) : (
             <Route path='/' element={<Auth />} />

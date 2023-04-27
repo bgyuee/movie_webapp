@@ -9,7 +9,7 @@
     height: 190px;
 
     .banner__title{
-      font-size: 3rem;
+      font-size: 2rem;
       font-weight: 800;
       padding-bottom: 0.5rem;
     }
@@ -25,7 +25,9 @@
         padding: 0.4rem 1.8rem 0.4rem 1rem;
         margin-right: 1rem;
         text-align: left;
+        box-sizing: border-box;
         transition: all 0.2s;
+        cursor: pointer;
       }
       .play{
         background-color: #fff;
@@ -80,11 +82,16 @@
     margin-left: 0px !important;
   }
   .banner__description{
-    font-size: 0.8rem !important;
-    width: auto !important;
+    display: none;
   }
   .banner__button{
-    font-size: 0.8rem !important;
+    padding-left: 10px !important;
+    padding-top: 0 !important;
+    padding-right: 0 !important;
+    padding-bottom: 0 !important;
+    width: 80px;
+    height: 30px;
+    font-size: 12px !important;
     border-radius: 4px !important;
   }
 }
