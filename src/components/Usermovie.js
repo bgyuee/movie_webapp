@@ -74,7 +74,7 @@ const fetchVideos = async () => {
       movies={wishListmovie}
       title="내가 찜한 목록"
       userUid={userObj.uid}
-      modalOpen={modalOpen} 
+      modalOpen={modalOpen}
       setModalOpen={setModalOpen}
       onWishListChange={onWishListChange}
        />
