@@ -3,7 +3,7 @@ import { authService, db, storage } from 'fbase';
 import { updateProfile } from 'firebase/auth';
 import { collection, doc, getDocs } from 'firebase/firestore';
 import { deleteObject, getDownloadURL, ref, uploadString } from 'firebase/storage';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaPen, FaImage ,FaCheck } from "react-icons/fa";
 import { AiFillDelete } from "react-icons/ai";
@@ -34,21 +34,22 @@ function Mypage({userObj, setUserprofileImg, setUsername}) {
     };
   }, []);
 
-  const onLogOutClick = () => {
+  const onLogOutClick = useCallback(() => {
     const ok = window.confirm("로그아웃 하시겠습니까?");
     if (ok) {
       authService.signOut();
       navigate('/');
     }
-  }
-  const onChange = e => {
+  }, [authService, navigate]);
+
+  const onChange = useCallback(e => {
     const value = e.target.value;
     const name = e.target.name;
 
     if(name === 'nickname') setNickname(value);
-  }
+  }, []);
 
-  const onFilechange = e => {
+  const onFilechange = useCallback(e => {
     
     const {target:{files}} = e;
     const theFile = files[0];
@@ -60,9 +61,9 @@ function Mypage({userObj, setUserprofileImg, setUsername}) {
       setAttachment(result);
     }
     reader.readAsDataURL(theFile);
-  }
+  }, []);
 
-  const onSubmit = async (e) => {
+  const onSubmit = useCallback(async (e) => {
     e.preventDefault();
 
     try {
@@ -74,9 +75,9 @@ function Mypage({userObj, setUserprofileImg, setUsername}) {
     } catch(e) {
       console.log(e);
     }
-  }
+  }, [userObj, nickname, setUsername]);
   
-  const Imgadd = async () => {
+  const Imgadd = useCallback(async () => {
     try {
       setProfileImgfix(false);
       let attachmentUrl ="";
@@ -92,8 +93,9 @@ function Mypage({userObj, setUserprofileImg, setUsername}) {
     }catch(e) {
       console.error(e);
     }
-  }
-  const Imgdel = async () => {
+  }, [attachment, photoURL, uid, userObj, setUserprofileImg]);
+  
+  const Imgdel = useCallback(async () => {
     const ok = window.confirm("삭제하시겠습니까?");
     if(ok) {
       setAttachment("");
@@ -105,7 +107,7 @@ function Mypage({userObj, setUserprofileImg, setUsername}) {
         })
       }
     }
-  }
+  }, [attachment, photoURL, uid, userObj]);
 
   return (
     

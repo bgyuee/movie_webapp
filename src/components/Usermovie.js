@@ -1,7 +1,7 @@
 import axios from '../api/axios';
 import { db } from 'fbase';
 import { collection, getDocs } from 'firebase/firestore';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import UserRow from './UserRow';
 
@@ -12,15 +12,15 @@ function Usermovie({userObj, modalOpen, setModalOpen}) {
   const [wishListmovie, setWishListmovie] = useState([]);
 
   // 찜 목록이 변경되었을때 실행
-  const onWishListChange = () => {
+  const onWishListChange = useCallback(() => {
     isMovieDibbed();
-  }
+  }, [userObj])
 
   useEffect(() => {
     if (userwishList.length > 0) {
       fetchVideos();
     }
-  }, [userwishList]);
+  }, [userwishList, onWishListChange]);
 
     /* --------------------------------------------------------영화불러오기----------------------------------------------------------------------- */
   // 찜목록
@@ -28,7 +28,7 @@ function Usermovie({userObj, modalOpen, setModalOpen}) {
     isMovieDibbed();
   }, [userObj])
   
-  const isMovieDibbed = async () => {
+  const isMovieDibbed = useCallback(async () => {
     const movieRef = collection(db, `Dibs/${uid}/movies`);
     const querySnapshot = await getDocs(movieRef);
     const movies = [];
@@ -37,10 +37,10 @@ function Usermovie({userObj, modalOpen, setModalOpen}) {
       movies.push(movie.data().movies);
     });
     setUserwishList(movies);
-  }
+  }, [uid]);
 
 // 해당 영화 불러오기
-const fetchVideos = async () => {
+const fetchVideos = useCallback(async () => {
   try {
     const movieListPromises = userwishList.map(async (movie) => {
         try {
@@ -63,7 +63,7 @@ const fetchVideos = async () => {
   } catch (error) {
     console.error(error);
   }
-};
+}, [userwishList]);
 
   
   /* ---------------------------------------------------------//영화불러오기----------------------------------------------------------------------- */

@@ -1,5 +1,5 @@
 import axios from 'api/axios';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import MovieModal from 'components/MovieModal';
 import "styles/Row.scss";
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
@@ -40,13 +40,12 @@ function Row({title, id, fetchUrl, userUid, istv}) {
   }, [movies]);
 
 
-  const fetchMovieData = async () => {
+  const fetchMovieData = useCallback(async () => {
     const request = await axios.get(fetchUrl);
-
     setMovies(request.data.results);
-  }
+  }, [fetchUrl]);
 
-  const fetchGenre = async () => {
+  const fetchGenre = useCallback(async () => {
     try {
       const request = await axios.get(`/genre/movie/list`);
       const genres = request.data.genres;
@@ -60,9 +59,9 @@ function Row({title, id, fetchUrl, userUid, istv}) {
     }catch (error) {
       console.log('error -> ', error);
     }
-  }
+  }, [movies])
 
-  const fetchVideos = async () => {
+  const fetchVideos = useCallback(async () => {
     try {
       const videoRequests = movies.map((movie) => {
         const url = istv ? `/tv/${movie.id}` : `/movie/${movie.id}`;
@@ -77,16 +76,16 @@ function Row({title, id, fetchUrl, userUid, istv}) {
     } catch (error) {
       console.error(error);
     }
-  };
+  }, [movies, istv]);
 
-  const handleClick = (movie, genre, index) => {
+  const handleClick = useCallback((movie, genre, index) => {
     setMovieSelected(movie);
     setSelectgenre(genre);
     setMovieindex(index);
     setModalOpen(true);
-  }
+  }, []);
 
-  const onMouseOver = (index, movieId) => () => {
+  const onMouseOver = useCallback((index, movieId) => () => {
     isMovieDibbed(userUid, movieId);
     isLikeUser(userUid, movieId);
     getLikesCount(movieId);
@@ -96,16 +95,16 @@ function Row({title, id, fetchUrl, userUid, istv}) {
       newState[index] = true;
       return newState;
     });
-  };
+  }, [userUid]);
   
-  const onMouseLeave = (index) => () => {
+  const onMouseLeave = useCallback((index) => () => {
     setLikeTotal(0);
     setVideoplay((prevState) => {
       const newState = [...prevState];
       newState[index] = false;
       return newState;
     });
-  };
+  }, []);
   
   /*---------------------------------------------- 찜하기 -------------------------------------------------------*/
   // 해당 무비상세정보를 클릭했을때 토글처럼 추가 or 삭제기능
@@ -205,33 +204,32 @@ function Row({title, id, fetchUrl, userUid, istv}) {
   }
 
  /*-----------------------------------------------//좋아요 -------------------------------------------------------*/
+ const renderTitle = useMemo(() => {
+  switch (title) {
+    case "NETFLIX ORIGINALS":
+      return "오리지널";
+    case "Trending Now":
+      return "지금 뜨는 콘텐츠";
+    case "Top Rated":
+      return "인기 콘텐츠";
+    case "Animation Movie":
+      return "애니메이션";
+    case "Family Movie":
+      return "가족";
+    case "Adventure Movie":
+      return "모험";
+    case "Science Movie":
+      return "과학";
+    case "Action Movie":
+      return "액션";
+    default:
+      return title;
+  }
+}, [title]);
 
   return (
     <section className='row' key={id}>
-      <h2>
-      {(() => {
-      switch(title) {
-        case "NETFLIX ORIGINALS":
-          return "오리지널";
-        case "Trending Now":
-          return "지금 뜨는 콘텐츠";
-        case "Top Rated":
-          return "인기 콘텐츠";
-        case "Animation Movie":
-          return "애니메이션";
-        case "Family Movie":
-          return "가족";
-        case "Adventure Movie":
-          return "모험"
-        case "Science Movie":
-          return "과학";
-        case "Action Movie":
-          return "액션";
-        default:
-          return title;
-      }
-    })()}
-      </h2>
+      <h2>{renderTitle}</h2>
       <Swiper
        modules={[Navigation, Pagination, Scrollbar, A11y]}
        navigation // arrow 버튼 사용 유무

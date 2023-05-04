@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import axios from 'api/axios';  //api폴더안에있는 axios를 사용하겠다
 import requests from 'api/requests';
 import "styles/Banner.scss";
@@ -15,7 +15,7 @@ function Banner() {
     fetchData();
   }, []);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     //현재 상영중인 영화 정보를 가져오기(20개 영화)
     const request = await axios.get(requests.fetchNowPlaying); //기존에 axios로 했을대는 주소를 한꺼번에 했는데 이번에는 직접 axsio를 만들어서 baseurl이랑  params안에 api키까지 다 지정해놓고, requests라는 파일을 만들어 안에 상세한 주소까지넣어서 주소를 안치고 쉽게 받아올수있다
     // console.log('request --->',request);
@@ -36,7 +36,7 @@ function Banner() {
     });
       setMovie(movieDetail);
       // console.log(`movieDetail ->>`, movieDetail);
-  }
+  }, []);
 
   const truncate = (str, n) => {
     return str?.length > n ? str.substr(0, n - 1) + "..." : str; //str?.length > n : str의 글자수가 100보다 클경우에 //? 되면되고 안되면 안되고 에러가 안뜸

@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'api/axios';
+import React, { useCallback, useEffect, useState } from 'react';
 import MovieModal from 'components/MovieModal';
 import "styles/Row.scss";
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
@@ -12,7 +11,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import styled from 'styled-components';
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDocs, query, where } from 'firebase/firestore';
 import { db } from 'fbase';
 
 function UserRow({
@@ -33,14 +32,14 @@ function UserRow({
   const [likeList, setLikeList] = useState(false);
   const [likeTotal, setLikeTotal] = useState(0);
 
-  const handleClick = (movie, genre, index) => {
+  const handleClick = useCallback((movie, genre, index) => {
     setMovieSelected(movie);
     setSelectgenre(genre?.map(item => (item.name)));
     setMovieindex(index);
     setModalOpen(true);
-  }
+  }, [setModalOpen]);
   
-    const onMouseOver = (index, movieId) => () => {
+    const onMouseOver = useCallback((index, movieId) => () => {
       isMovieDibbed(userUid, movieId);
       isLikeUser(userUid, movieId);
       getLikesCount(movieId);
@@ -50,16 +49,16 @@ function UserRow({
         newState[index] = true;
         return newState;
       });
-    };
+    }, [userUid]);
     
-    const onMouseLeave = (index) => () => {
+    const onMouseLeave = useCallback((index) => () => {
       setLikeTotal(0);
       setVideoplay((prevState) => {
         const newState = [...prevState];
         newState[index] = false;
         return newState;
       });
-    };
+    }, []);
 
   /*---------------------------------------------- 찜하기 -------------------------------------------------------*/
   // 해당 무비상세정보를 클릭했을때 토글처럼 추가 or 삭제기능

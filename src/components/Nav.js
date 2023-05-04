@@ -1,5 +1,4 @@
-import { authService } from 'fbase';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "styles/Nav.scss";
 import netflex from "../images/NETFLEX.png";
@@ -23,14 +22,14 @@ useEffect(() => {
   };
 }, []);
 
-const onChange = (e) => {
+const onChange = useCallback((e) => {
   setSearchValue(e.target.value);
   if(e.target.value === ""){
     navigate('/');
   }else {
     navigate(`/search?q=${e.target.value}`); //q는 query(질문)
   } 
-}
+}, [navigate]);
 
 // onClick={() => {window.location.reload()}} 누룰때마다 새로고침이 되게한다
   return (

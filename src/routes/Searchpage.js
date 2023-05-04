@@ -1,5 +1,5 @@
 import axios from '../api/axios';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { addDoc, collection, deleteDoc, doc, getDocs, query, where } from 'firebase/firestore';
 import { db } from 'fbase';
@@ -58,7 +58,7 @@ function Searchpage({userObj}) {
     setModalOpen(true);
   };
   
-  const onMouseOver = (index, movieId) => () => {
+  const onMouseOver = useCallback((index, movieId) => () => {
     isMovieDibbed(userUid, movieId);
     isLikeUser(userUid, movieId);
     fetchvidoeMovie(movieId);
@@ -69,19 +69,19 @@ function Searchpage({userObj}) {
       newState[index] = true;
       return newState;
     });
-  };
+  }, []);
   
-  const onMouseLeave = (index) => () => {
+  const onMouseLeave = useCallback((index) => () => {
     setVideoplay((prevState) => {
       const newState = [...prevState];
       newState[index] = false;
       return newState;
     });
-  };
+  }, []);
 
   /*---------------------------------------------- 찜하기 -------------------------------------------------------*/
   // 해당 무비상세정보를 클릭했을때 토글처럼 추가 or 삭제기능
-  const Dib = async (userUid, movieId) => {
+  const Dib = useCallback(async (userUid, movieId) => {
     const isDibbed = await isMovieDibbed(userUid, movieId);
 
     if(isDibbed) {
@@ -96,7 +96,7 @@ function Searchpage({userObj}) {
         console.error(e);
       }
     }
-  }
+  }, [])
 
   // 해당 movieId가 있는지 확인
   const isMovieDibbed = async (userUid, movieId) => {
@@ -124,7 +124,7 @@ function Searchpage({userObj}) {
   }
  /*---------------------------------------------- //찜하기 -------------------------------------------------------*/
  /*-----------------------------------------------좋아요 -------------------------------------------------------*/
-  const Like = async (userUid, movieId) => {
+  const Like = useCallback(async (userUid, movieId) => {
     const isLiked = await isLikeUser(userUid, movieId);
 
     if(isLiked) {
@@ -139,7 +139,7 @@ function Searchpage({userObj}) {
         console.error(e);
       }
     }
-  }
+  }, [])
 
   // movieId에 해당하는 문서 수를 가져오는 함수
   const getLikesCount = async (movieId) => {

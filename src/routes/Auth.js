@@ -1,6 +1,6 @@
 import { authService } from 'fbase';
 import { GithubAuthProvider, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import 'styles/auth.scss';
 
 function Auth() {
@@ -10,15 +10,15 @@ function Auth() {
   const [newAccount, setNewAccount] = useState('true'); // true:회원가입, false:로그인
   const [error, setError] = useState('');
 
-  const onChange = e => {
+  const onChange = useCallback(e => {
     const name = e.target.name;
     const value = e.target.value;
 
     if(name === 'email') setEmail(value);
     if(name === 'password') setPassword(value);
-  }
+  }, []);
 
-  const onSubmit = async (e) => {
+  const onSubmit = useCallback(async (e) => {
     e.preventDefault();
     try{
       let data;
@@ -32,16 +32,16 @@ function Auth() {
         console.log(error.message);
         setError(error.message);
     }
-  }
+  }, [newAccount, authService, email, password]);
 
-  const onSocialClick = async (e) => {
+  const onSocialClick = useCallback(async (e) => {
     const name = e.target.name;
     let provider;
     if(name === 'google') provider = new GoogleAuthProvider();
     if(name === 'github') provider = new GithubAuthProvider();
 
     const data = await signInWithPopup(authService, provider);
-  }
+  }, [authService]);
 
   return (
     <div className='auth_wrap'>
