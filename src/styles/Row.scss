@@ -74,9 +74,37 @@
       &:first-of-type, &:nth-of-type(6n){
         left: 100px;
       }
-      // &:nth-of-type(5n){
-      //   right: 200px;
-      // }
+      &:nth-of-type(5n){
+        left: -100px;
+      }
+    
+      @media (min-width: 998px) and (max-width: 1377px) {
+        &:first-of-type, &:nth-of-type(5n){
+          left: 50px;
+        }
+        &:nth-of-type(4n){
+          left: -50px;
+        }
+      }
+
+      @media (min-width: 625px) and (max-width: 997px) {
+        &:first-of-type, &:nth-of-type(4n){
+          left: 30px;
+        }
+        &:nth-of-type(3n){
+          left: -30px;
+        }
+      }
+
+      @media (max-width: 624px) {
+        &:first-of-type, &:nth-of-type(3n){
+          left: 30px;
+        }
+        &:nth-of-type(2n){
+          left: -30px;
+        }
+      }
+      
     }
     &:hover>.movie_information{
       visibility: visible;
